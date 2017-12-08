@@ -1,0 +1,17 @@
+name: ${name}
+version: ${version}
+description: ${description}
+author: ${author}
+website: ${url}
+
+main: ${mainClass}
+
+commands:
+    name:
+        description: Generate a name
+        usage: /<command>
+    spawn:
+        description: Generate a new npc
+        usage: /<command>
+
+permissions: {}
