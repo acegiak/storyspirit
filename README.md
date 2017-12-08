@@ -1,5 +1,7 @@
 ## Summary
 
+A plugin for spigot Minecraft servers. Just bung it in the plugins folder
+
 This just adds all of the nonsense Ashton wants to add to the game like freakin npcs and stuff. I dunno.
 
 ## Current Features:
