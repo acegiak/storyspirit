@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import java.util.ArrayList;
 import java.util.List;
 import net.machinespirit.storyspirit.Namer;
-import net.machinespirit.storyspirit.StorySpirit;;
+import net.machinespirit.storyspirit.StorySpirit;
 
 
 public class Character {
@@ -60,7 +60,6 @@ public static void spawn(World world, Location location,EntityType entityType,In
     }
     entity.setCustomName(name);
     entity.setCustomNameVisible(true);
-    System.out.print(entity.toString());;
 
 
     ItemStack tool = null;

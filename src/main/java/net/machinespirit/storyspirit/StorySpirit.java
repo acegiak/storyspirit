@@ -14,6 +14,7 @@ public class StorySpirit extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         // Don't log enabling, Spigot does that for you automatically!
 
         // Commands enabled with following method must have entries in plugin.yml
@@ -23,5 +24,8 @@ public class StorySpirit extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new StoryListener(), this);
 
         random = new Random();
+
     }
+
+
 }

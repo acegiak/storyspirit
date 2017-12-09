@@ -6,6 +6,8 @@ website: ${url}
 
 main: ${mainClass}
 
+load: STARTUP
+
 commands:
     name:
         description: Generate a name
