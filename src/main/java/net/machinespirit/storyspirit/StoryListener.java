@@ -12,9 +12,7 @@ public class StoryListener implements Listener
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event)
     {
-        System.out.println("creaturespawn");
-        if(StorySpirit.random.nextFloat() < 1f/250f){
-            System.out.println("replacing");
+        if(StorySpirit.random.nextFloat() < 1f/150f){
             event.setCancelled(true);
             Character.spawn(event.getLocation().getWorld(), event.getLocation(),event.getEntityType(),StorySpirit.random.nextInt(18));
         }

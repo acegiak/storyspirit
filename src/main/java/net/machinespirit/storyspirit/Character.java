@@ -78,12 +78,12 @@ public static void spawn(World world, Location location,EntityType entityType,In
     int[] color2 = new int[]{StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255)};
 
     
-    itemTweak(head,StorySpirit.random.nextInt(8)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(helmnames)+" of "+name:name+"'s "+Namer.random(helmnames),StorySpirit.random.nextBoolean()?color1:color2);
-    itemTweak(shirt,StorySpirit.random.nextInt(8)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(shirtnames)+" of "+name:name+"'s "+Namer.random(shirtnames),StorySpirit.random.nextBoolean()?color1:color2);
-    itemTweak(pants,StorySpirit.random.nextInt(8)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(pantnames)+" of "+name:name+"'s "+Namer.random(pantnames),StorySpirit.random.nextBoolean()?color1:color2);
-    itemTweak(shoes,StorySpirit.random.nextInt(12)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(shoenames)+" of "+name:name+"'s "+Namer.random(shoenames),StorySpirit.random.nextBoolean()?color1:color2);
+    Loot.itemTweak(head,StorySpirit.random.nextInt(8)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(helmnames)+" of "+name:name+"'s "+Namer.random(helmnames),StorySpirit.random.nextBoolean()?color1:color2);
+    Loot.itemTweak(shirt,StorySpirit.random.nextInt(8)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(shirtnames)+" of "+name:name+"'s "+Namer.random(shirtnames),StorySpirit.random.nextBoolean()?color1:color2);
+    Loot.itemTweak(pants,StorySpirit.random.nextInt(8)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(pantnames)+" of "+name:name+"'s "+Namer.random(pantnames),StorySpirit.random.nextBoolean()?color1:color2);
+    Loot.itemTweak(shoes,StorySpirit.random.nextInt(12)>1?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(shoenames)+" of "+name:name+"'s "+Namer.random(shoenames),StorySpirit.random.nextBoolean()?color1:color2);
     if(tool!=null){
-    itemTweak(tool,StorySpirit.random.nextInt(5)<3?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(toolnames)+" of "+name:name+"'s "+Namer.random(toolnames),StorySpirit.random.nextBoolean()?color1:color2);
+        Loot.itemTweak(tool,StorySpirit.random.nextInt(5)<3?null:Namer.name(),StorySpirit.random.nextBoolean()?Namer.random(toolnames)+" of "+name:name+"'s "+Namer.random(toolnames),StorySpirit.random.nextBoolean()?color1:color2);
     }
 
 
@@ -159,22 +159,7 @@ static Object select(Object[] things, Integer points){
     return things[0];
 }
 
-static void itemTweak(ItemStack item,String name,String lore,int[] color){
-    ItemMeta meta = item.getItemMeta();
-    if(name != null && !name.equals("")){meta.setDisplayName(name);}
-    if(lore != null && !lore.equals("")){
-        ArrayList<String> lorelist = new ArrayList<String>();
-        lorelist.add(lore);
-        meta.setLore(lorelist);
-    }
-    item.setItemMeta(meta);
-    if(item.getType().equals(Material.LEATHER_BOOTS) || item.getType().equals(Material.LEATHER_HELMET) || item.getType().equals(Material.LEATHER_CHESTPLATE) || item.getType().equals(Material.LEATHER_LEGGINGS)){
-        Color colour = Color.fromRGB(color[0],color[1],color[2]);
-        LeatherArmorMeta lmeta = (LeatherArmorMeta)item.getItemMeta();
-        lmeta.setColor(colour);
-        item.setItemMeta(lmeta);
-    }
-}
+
 
 
 
