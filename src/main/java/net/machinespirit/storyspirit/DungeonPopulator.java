@@ -49,7 +49,7 @@ class DungeonPopulator extends BlockPopulator{
 
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
-                if(random.nextFloat()>1f/5f){
+                if(random.nextFloat()>1f/250f){
                         return;
                 }
                 Block origin = null;
