@@ -9,15 +9,21 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.Dispenser;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Sandstone;
 import org.bukkit.material.Torch;
 import org.bukkit.material.Wool;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.omg.IOP.ENCODING_CDR_ENCAPS;
 
 import java.util.ArrayList;
@@ -32,24 +38,35 @@ import net.machinespirit.storyspirit.StorySpirit;
 
 class DungeonPopulator extends BlockPopulator{
 
-        ArrayList<Material> foundations = new ArrayList<Material>(Arrays.asList(
+        public static ArrayList<Material> foundations = new ArrayList<Material>(Arrays.asList(
                 Material.GRASS,
                 Material.STONE,
                 Material.DIRT,
                 Material.SAND,
                 Material.SANDSTONE
-                ));
+        ));
 
-        ArrayList<Material> air = new ArrayList<Material>(Arrays.asList(
-                        Material.AIR,
-                        Material.LEAVES,
-                        Material.SNOW,
-                        Material.GRASS
-                        ));
+        public static ArrayList<Material> air = new ArrayList<Material>(Arrays.asList(
+                Material.AIR,
+                Material.LEAVES,
+                Material.SNOW,
+                Material.GRASS
+        ));
 
+        public static ArrayList<Material> dontTouch = new ArrayList<Material>(Arrays.asList(
+                        Material.CHEST,
+                        Material.DISPENSER,
+                        Material.TRIPWIRE,
+                        Material.TRIPWIRE_HOOK
+        ));
+        public static float treasureRate = 0.05f;
+        public static float trapRate = 0.05f;
+        public static float spawnerRate = 0.10f;
+        public static float decoRate = 0.05f;
+        
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
-                if(random.nextFloat()>1f/250f){
+                if(random.nextFloat()>1f/5f){
                         return;
                 }
                 Block origin = null;
@@ -98,12 +115,14 @@ class DungeonPopulator extends BlockPopulator{
                         buildRoom(origin.getRelative(0,1,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE), Arrays.asList(null,null,null,Material.SANDSTONE_STAIRS),1,0.25f,null, random);
                         
                 }else{
-                        buildRoom(origin, 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK), Arrays.asList(null,null,null,Material.IRON_FENCE), 1,1f,null, random);
+                        buildRoom(origin.getRelative(0,2,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK), Arrays.asList(null,null,null,Material.IRON_FENCE), 1,1f,null, random);
                 }
 
         }
 
         public void buildRoom(Block origin,int xsize, int zsize, List<Material> roof, List<Material> wall, List<Material> floor, List<Material> crenellations, int interval,float branchChance,List<Block> origins, Random random){
+                xsize = (int)Math.floor((double)(xsize/2f))*2+1;
+                zsize = (int)Math.floor((double)(zsize/2f))*2+1;
                 if(origins == null){
                         origins = new ArrayList<Block>();
                 }
@@ -122,20 +141,22 @@ class DungeonPopulator extends BlockPopulator{
                         for(int y = ymin;y <= ymax; y++){
                                 for(int z = zmin;z <= zmax; z++){
                                         Block thisBlock = origin.getRelative(x,y,z);
-                                        if(y == ymax){
-                                                if(thisBlock.getType().equals(Material.CHEST)|| thisBlock.getType().equals(Material.LAVA)){
-                                                        thisBlock.getRelative(0,-1,0).setType(roof.get(random.nextInt(roof.size())));
-                                                }else{                                                        
+                                        if(!dontTouch.contains(thisBlock.getType())){
+                                                if(y == ymax){
+                                                        if(thisBlock.getType().equals(Material.CHEST)|| thisBlock.getType().equals(Material.LAVA)){
+                                                                thisBlock.getRelative(0,-1,0).setType(roof.get(random.nextInt(roof.size())));
+                                                        }else{                                                        
+                                                                thisBlock.setType(roof.get(random.nextInt(roof.size())));
+                                                        }
                                                         thisBlock.setType(roof.get(random.nextInt(roof.size())));
+                                                }else if(y == ymin){
+                                                        thisBlock.setType(floor.get(random.nextInt(floor.size())));
+                                                }else if(((z == zmin || z == zmax)&&(interval<0^x%Math.abs(interval)==0))
+                                                        || ((x == xmin || x == xmax)&&(interval<0^z%Math.abs(interval)==0))){
+                                                        thisBlock.setType(wall.get(random.nextInt(wall.size())));
+                                                }else{
+                                                        thisBlock.setType(Material.AIR);
                                                 }
-                                                thisBlock.setType(roof.get(random.nextInt(roof.size())));
-                                        }else if(y == ymin){
-                                                thisBlock.setType(floor.get(random.nextInt(floor.size())));
-                                        }else if(((z == zmin || z == zmax)&&(interval<0^x%Math.abs(interval)==0))
-                                                 || ((x == xmin || x == xmax)&&(interval<0^z%Math.abs(interval)==0))){
-                                                thisBlock.setType(wall.get(random.nextInt(wall.size())));
-                                        }else{
-                                                thisBlock.setType(Material.AIR);
                                         }
                                         allBlocks.add(thisBlock);
                                 }
@@ -144,20 +165,57 @@ class DungeonPopulator extends BlockPopulator{
                 if(interval < 2 && interval > -2){
                         //add doors?
                         if(random.nextFloat()<0.5f){
-                                origin.getRelative(xmin,1,0).setType(Material.AIR);
-                                origin.getRelative(xmin,0,0).setType(Material.AIR);
+                                if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(xmin,1,0), Material.IRON_DOOR_BLOCK, 8, true, true);
+                                        setBlockType(origin.getRelative(xmin,0,0), Material.IRON_DOOR_BLOCK, 2, true, true);
+                                        setBlockType(origin.getRelative(xmin-1,1,1), Material.STONE_BUTTON, 1, true, true);
+                                }else if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(xmin,1,0), Material.WOODEN_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(xmin,0,0), Material.WOODEN_DOOR, 2, true, true);
+                                }else{
+                                        origin.getRelative(xmin,1,0).setType(Material.AIR);
+                                        origin.getRelative(xmin,0,0).setType(Material.AIR);
+                                }
                         }
                         if(random.nextFloat()<0.5f){
-                                origin.getRelative(xmax,1,0).setType(Material.AIR);
-                                origin.getRelative(xmax,0,0).setType(Material.AIR);
+                                if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(xmax,1,0), Material.IRON_DOOR_BLOCK, 8, true, true);
+                                        setBlockType(origin.getRelative(xmax,0,0), Material.IRON_DOOR_BLOCK, 2, true, true);
+                                        setBlockType(origin.getRelative(xmax+1,1,1), Material.STONE_BUTTON, 2, true, true);
+                                }else if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(xmax,1,0), Material.WOODEN_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(xmax,0,0), Material.WOODEN_DOOR, 2, true, true);
+                                }else{
+                                        origin.getRelative(xmax,1,0).setType(Material.AIR);
+                                        origin.getRelative(xmax,0,0).setType(Material.AIR);
+                                }
                         }
                         if(random.nextFloat()<0.5f){
-                                origin.getRelative(0,1,zmin).setType(Material.AIR);
-                                origin.getRelative(0,0,zmin).setType(Material.AIR);
+                                if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(0,1,zmin), Material.IRON_DOOR_BLOCK, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmin), Material.IRON_DOOR_BLOCK, 1, true, true);
+                                        setBlockType(origin.getRelative(1,1,zmin-1), Material.STONE_BUTTON, 1, true, true);
+
+                                }else if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(0,1,zmin), Material.WOODEN_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmin), Material.WOODEN_DOOR, 3, true, true);
+                                }else{
+                                        origin.getRelative(0,1,zmin).setType(Material.AIR);
+                                        origin.getRelative(0,0,zmin).setType(Material.AIR);
+                                }
                         }
                         if(random.nextFloat()<0.5f){
-                                origin.getRelative(0,1,zmax).setType(Material.AIR);
-                                origin.getRelative(0,0,zmax).setType(Material.AIR);
+                                if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(0,1,zmax), Material.IRON_DOOR_BLOCK, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmax), Material.IRON_DOOR_BLOCK, 1, true, true);
+                                        setBlockType(origin.getRelative(1,1,zmax+1), Material.STONE_BUTTON, 1, true, true);
+                                }else if(random.nextFloat()<0.25f){
+                                        setBlockType(origin.getRelative(0,1,zmax), Material.WOODEN_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmax), Material.WOODEN_DOOR, 4, true, true);
+                                }else{
+                                        origin.getRelative(0,1,zmax).setType(Material.AIR);
+                                        origin.getRelative(0,0,zmax).setType(Material.AIR);
+                                }
                         }
                 }
 
@@ -166,7 +224,7 @@ class DungeonPopulator extends BlockPopulator{
                 boolean stairs = true;
                 boolean spiders = true;
 
-                if(random.nextFloat()<0.1f && interval <2 && interval >-2){
+                if(random.nextFloat()<spawnerRate && interval <2 && interval >-2){
                         origin.setType(Material.MOB_SPAWNER);
                         traps = false;
                         light = false;
@@ -186,25 +244,139 @@ class DungeonPopulator extends BlockPopulator{
                                 origin.setType(Material.AIR);
                         }
                         
+                }else if(random.nextFloat()<spawnerRate ){
+                        Character.spawn(origin.getWorld(), origin.getRelative(0,1,0).getLocation(), "foe", random.nextInt(20));
+                        traps = false;
                 }
+
+                
 
                 Collections.shuffle(allBlocks);
 
                 for (Block ablock : allBlocks) {
-                        if(traps){                       
-                                if(ablock.getType().equals(Material.SMOOTH_BRICK) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<0.1f && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
-                                        ablock.getRelative(0,1,0).setType(Material.STONE_PLATE);
-                                        ablock.getRelative(0,-1,0).setType(Material.TNT);
-                                }else if(ablock.getType().equals(Material.WOOD) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<0.1f && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
-                                        ablock.getRelative(0,1,0).setType(Material.WOOD_PLATE);
-                                        ablock.getRelative(0,-1,0).setType(Material.TNT);
-                                }else if(ablock.getType().equals(Material.SANDSTONE) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<0.1f && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
-                                        ablock.getRelative(0,1,0).setType(Material.STONE_PLATE);
-                                        ablock.getRelative(0,-1,0).setType(Material.TNT);
+
+
+                        
+                        if(traps){
+
+                                //START TRIPWIRES
+                                boolean ew = random.nextBoolean();
+                                boolean trip = false;
+                                if(ablock.getRelative(1,0,0).getType().equals(Material.AIR)&&ablock.getRelative(-1,0,0).getType().equals(Material.AIR)){
+                                        ew = true;
+                                        trip = true;
                                 }
+                                if(ablock.getRelative(0,0,1).getType().equals(Material.AIR)&&ablock.getRelative(0,0,-1).getType().equals(Material.AIR)){
+                                        ew = false;
+                                        trip = true;
+                                }
+                                if(random.nextFloat()<trapRate && trip){
+                                        
+                                        List<Block> bblocks = new ArrayList<Block>();
+                                        List<Block> seenblocks = new ArrayList<Block>();
+                                        bblocks.add(ablock);
+                                        seenblocks.add(ablock);
+                                        
+                                        List<Block> sblocks = new ArrayList<Block>();
+                                        int triggercount = 0;
+                                        while(bblocks.size() > 0){
+                                                Block bblock = bblocks.get(0);
+                                                bblocks.remove(0);
+                                                if(bblock.getType().equals(Material.AIR) && bblock.getRelative(0,-1,0).getType().isOccluding()){
+                                                if(!ew){
+                                                        if(allBlocks.contains(bblock)){
+                                                                if(!seenblocks.contains(bblock.getRelative(0,0,1))){
+                                                                        bblocks.add(bblock.getRelative(0,0,1));
+                                                                        seenblocks.add(bblock.getRelative(0,0,1));
+                                                                }
+                                                                if(!seenblocks.contains(bblock.getRelative(0,0,-1))){
+                                                                        bblocks.add(bblock.getRelative(0,0,-1));
+                                                                        seenblocks.add(bblock.getRelative(0,0,-1));
+                                                                }
+                                                        
+                                                                if(bblock.getRelative(0,0,-1).getType().isOccluding()){
+                                                                        setBlockType(bblock, Material.TRIPWIRE_HOOK, 4, true,true);
+                                                                        setupLauncher(bblock.getRelative(0,1,-1),3);
+                                                                        triggercount++;
+                                                                }else if(bblock.getRelative(0,0,1).getType().isOccluding()){
+                                                                        setBlockType(bblock, Material.TRIPWIRE_HOOK, 6, true,true);
+                                                                        setupLauncher(bblock.getRelative(0,1,1),2);
+                                                                        triggercount++;
+                                                                }else {
+                                                                        sblocks.add(bblock);
+                                                                }
+                                                        }
+                                                }else{
+                                                        if(allBlocks.contains(bblock)){
+
+                                                                if(!seenblocks.contains(bblock.getRelative(1,0,0))){
+                                                                        bblocks.add(bblock.getRelative(1,0,0));
+                                                                        seenblocks.add(bblock.getRelative(1,0,0));
+                                                                }
+                                                                if(!seenblocks.contains(bblock.getRelative(-1,0,0))){
+                                                                        bblocks.add(bblock.getRelative(-1,0,0));
+                                                                        seenblocks.add(bblock.getRelative(-1,0,0));
+                                                                }
+
+                                                                if(bblock.getRelative(-1,0,0).getType().isOccluding()){
+                                                                        setBlockType(bblock, Material.TRIPWIRE_HOOK, 7, true,true);
+                                                                        setupLauncher(bblock.getRelative(-1,1,0),5);
+                                                                        triggercount++;
+                                                                } else if(bblock.getRelative(1,0,0).getType().isOccluding()){
+                                                                        setBlockType(bblock, Material.TRIPWIRE_HOOK, 5, true,true);
+                                                                        setupLauncher(bblock.getRelative(1,1,0),4);
+                                                                        triggercount++;
+                                                                }else{
+                                                                        sblocks.add(bblock);
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                        }
+                                        if(triggercount > 1){
+                                                for (Block sBlock : sblocks) {
+                                                        sBlock.setType(Material.TRIPWIRE);
+                                                        BlockState state = sBlock.getState();
+                                                        state.setRawData((byte)4);
+                                                        state.update(true,true);
+                                                }
+                                        }
+                                }
+
+
+                                //START PRESSURE PLATE TNT
+                                if(!ablock.getRelative(0,-2,0).getType().equals(Material.AIR)&&random.nextFloat()<trapRate){
+                                        if(ablock.getType().equals(Material.SMOOTH_BRICK) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                                ablock.getRelative(0,1,0).setType(Material.STONE_PLATE);
+                                                ablock.getRelative(0,-1,0).setType(Material.TNT);
+                                        }else if(ablock.getType().equals(Material.WOOD) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                                ablock.getRelative(0,1,0).setType(Material.WOOD_PLATE);
+                                                ablock.getRelative(0,-1,0).setType(Material.TNT);
+                                        }else if(ablock.getType().equals(Material.SANDSTONE) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                                ablock.getRelative(0,1,0).setType(Material.STONE_PLATE);
+                                                ablock.getRelative(0,-1,0).setType(Material.TNT);
+                                        }
+                                }
+                                //PRESSURE PLATE SHOOTER
+                                if(ablock.getRelative(0,-1,0).getType().isOccluding() && ablock.getType().equals(Material.AIR) &&random.nextFloat()<trapRate){
+                                        ablock.setType(Material.STONE_PLATE);
+                                        if(ablock.getRelative(0,0,-1).getType().isOccluding()){ //NORTH
+                                                setupLauncher(ablock.getRelative(0,0,-1),3);
+                                        }
+                                        else if(ablock.getRelative(0,0,1).getType().isOccluding()){ //SOUTH
+                                                setupLauncher(ablock.getRelative(0,0,1),2);
+                                        }
+                                        else if(ablock.getRelative(-1,0,0).getType().isOccluding()){ //WEST
+                                                setupLauncher(ablock.getRelative(1,0,0),4);
+                                        }     
+                                        else if(ablock.getRelative(-1,0,0).getType().isOccluding()){//EAST
+                                                setupLauncher(ablock.getRelative(1,0,0),5);
+                                        }
+                                }
+
                         }
                         if(light){
-                                if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()<0.1f){
+                                if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()<decoRate){
  
                                         if(ablock.getRelative(0,0,-1).getType().isOccluding()){ //NORTH
                                                 ablock.setType(Material.TORCH);
@@ -220,87 +392,116 @@ class DungeonPopulator extends BlockPopulator{
                                                 state.setRawData((byte)4);
                                                 state.update(true,true);
                                         }
-                                        else if(ablock.getRelative(-1,0,0).getType().isOccluding()){ //WEST
+                                        else if(ablock.getRelative(1,0,0).getType().isOccluding()){ //WEST
                                                 ablock.setType(Material.TORCH);
                                                 BlockState state = ablock.getState();
                                                 state.setType(Material.TORCH);
-                                                state.setRawData((byte)1);
+                                                state.setRawData((byte)2);
                                                 state.update(true,true);
                                         }     
                                         else if(ablock.getRelative(-1,0,0).getType().isOccluding()){//EAST
                                                 ablock.setType(Material.TORCH);
                                                 BlockState state = ablock.getState();
                                                 state.setType(Material.TORCH);
-                                                state.setRawData((byte)2);
-                                                state.update(true,true);
-                                        }
-                                }
-                        }
-
-
-
-                        if(light){
-                                if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()<0.1f){
-                                        Block bblock = ablock;
-                                        do{
-                                        if(ablock.getRelative(0,0,-1).getType().isSolid()){ //NORTH
-                                                ablock.setType(Material.VINE);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.VINE);
-                                                state.setRawData((byte)4);
-                                                state.update(true,true);
-                                        }
-                                        else if(ablock.getRelative(0,0,1).getType().isSolid()){ //SOUTH
-                                                ablock.setType(Material.VINE);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.VINE);
                                                 state.setRawData((byte)1);
                                                 state.update(true,true);
                                         }
-                                        else if(ablock.getRelative(-1,0,0).getType().isSolid()){ //WEST
-                                                ablock.setType(Material.VINE);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.VINE);
-                                                state.setRawData((byte)2);
-                                                state.update(true,true);
-                                        }     
-                                        else if(ablock.getRelative(-1,0,0).getType().isSolid()){//EAST
-                                                ablock.setType(Material.VINE);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.VINE);
-                                                state.setRawData((byte)8);
-                                                state.update(true,true);
-                                        }
-                                        bblock = bblock.getRelative(0,-1,0);
-                                }while(bblock.getType().equals(Material.AIR));
                                 }
                         }
 
-                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()<0.025f){
+
+
+                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()<decoRate){
+                                Block bblock = ablock;
+                                do{
+                                if(ablock.getRelative(0,0,-1).getType().isSolid()){ //NORTH
+                                        ablock.setType(Material.VINE);
+                                        BlockState state = ablock.getState();
+                                        state.setType(Material.VINE);
+                                        state.setRawData((byte)4);
+                                        state.update(true,true);
+                                }
+                                else if(ablock.getRelative(0,0,1).getType().isSolid()){ //SOUTH
+                                        ablock.setType(Material.VINE);
+                                        BlockState state = ablock.getState();
+                                        state.setType(Material.VINE);
+                                        state.setRawData((byte)1);
+                                        state.update(true,true);
+                                }
+                                else if(ablock.getRelative(1,0,0).getType().isSolid()){ //WEST
+                                        ablock.setType(Material.VINE);
+                                        BlockState state = ablock.getState();
+                                        state.setType(Material.VINE);
+                                        state.setRawData((byte)8);
+                                        state.update(true,true);
+                                }     
+                                else if(ablock.getRelative(-1,0,0).getType().isSolid()){//EAST
+                                        ablock.setType(Material.VINE);
+                                        BlockState state = ablock.getState();
+                                        state.setType(Material.VINE);
+                                        state.setRawData((byte)2);
+                                        state.update(true,true);
+                                }
+                                bblock = bblock.getRelative(0,-1,0);
+                        }while(bblock.getType().equals(Material.AIR));
+                        }
+                
+
+                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()<treasureRate){
                                 fillchest(ablock);
                         }
-                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()<0.025f){
+                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()<treasureRate){
                                 ablock.setType(Material.TRAPPED_CHEST);
                                 List<ItemStack> contents = Loot.getTreasure();
                                 if(!ChestUtils.addItemsToChest(ablock, contents,true,StorySpirit.random)){
                                         System.out.println("Could not add items to chest");
                                 }
+                                ablock.getRelative(0,-2,0).setType(Material.TNT);
                         }
 
                         
 
 
-                        if(ablock.getType().equals(Material.SMOOTH_BRICK) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<0.05f && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                        if(ablock.getType().equals(Material.SMOOTH_BRICK) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
                                 fillchest(ablock);
                                 setBlockType(ablock.getRelative(0,1,0), Material.CARPET, 8, true, true);
-                        }else if(ablock.getType().equals(Material.WOOD) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<0.05f && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                        }else if(ablock.getType().equals(Material.WOOD) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
                                 fillchest(ablock);
                                 setBlockType(ablock.getRelative(0,1,0), Material.CARPET, 12, true, true);
-                        }else if(ablock.getType().equals(Material.SANDSTONE) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<0.05f && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                        }else if(ablock.getType().equals(Material.SANDSTONE) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
                                 fillchest(ablock);
                                 setBlockType(ablock.getRelative(0,1,0), Material.CARPET, 4, true, true);                               
                         }
-                        if(ablock.getType().equals(Material.AIR)&&(spiders ^ random.nextFloat()>0.05f)){
+
+                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()<treasureRate*0.25){
+                                if(ablock.getRelative(0,0,-1).getType().isOccluding()){
+                                        ablock.setType(Material.ITEM_FRAME);
+                                        ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setFacingDirection(BlockFace.NORTH);
+
+                                }else if(ablock.getRelative(0,0,1).getType().isOccluding()){
+                                        ablock.setType(Material.ITEM_FRAME);
+                                        ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setFacingDirection(BlockFace.SOUTH);
+                                }else if(ablock.getRelative(1,0,0).getType().isOccluding()){
+                                        ablock.setType(Material.ITEM_FRAME);
+                                        ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setFacingDirection(BlockFace.WEST);
+
+                                }else if(ablock.getRelative(-1,0,0).getType().isOccluding()){
+                                        ablock.setType(Material.ITEM_FRAME);
+                                        ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setFacingDirection(BlockFace.EAST);
+                                }
+                                
+                        }
+
+
+                        if(ablock.getType().equals(Material.AIR)&&(spiders ^ random.nextFloat()>decoRate*0.25f)){
                                 ablock.setType(Material.WEB);
                         }
 
@@ -321,10 +522,15 @@ class DungeonPopulator extends BlockPopulator{
                         }
 
 
-                        if(ablock.getY() == origin.getRelative(0,ymin,0).getY() && (ablock.getZ() == origin.getRelative(0,0,zmax).getZ() || ablock.getZ() == origin.getRelative(0,0,zmin).getZ())&& (ablock.getX() == origin.getRelative(xmax,0,0).getX() || ablock.getX() == origin.getRelative(xmin,0,0).getX() ) && (ablock.getRelative(0,-1,0).getType().equals(Material.AIR)||ablock.getRelative(0,-1,0).getType().equals(Material.WATER))){
-                                ablock.getRelative(0,-1,0).setType(floor.get(random.nextInt(floor.size())));
+                        if(ablock.getY() == origin.getRelative(0,ymin,0).getY() && (ablock.getZ() == origin.getRelative(0,0,zmax).getZ() || ablock.getZ() == origin.getRelative(0,0,zmin).getZ())&& (ablock.getX() == origin.getRelative(xmax,0,0).getX() || ablock.getX() == origin.getRelative(xmin,0,0).getX() )){
+                                Block bblock = ablock.getRelative(0,-1,0);
+                                while(bblock.getType().equals(Material.AIR)||bblock.getType().equals(Material.WATER)){
+                                        bblock.setType(floor.get(random.nextInt(floor.size())));
+                                        bblock = bblock.getRelative(0,-1,0);
+                                }
+                                
+                                bblock.setType(floor.get(random.nextInt(floor.size())));
 
-                                allBlocks.add(ablock.getRelative(0,-1,0));
                         }
                 }
 
@@ -361,6 +567,50 @@ class DungeonPopulator extends BlockPopulator{
                         }
                 }
 
+                //HIDE TNT
+                for(Block ablock : allBlocks){
+
+                        if(ablock.getType().equals(Material.TNT)){
+                                if(ablock.getRelative(0,-1,0).getType().equals(Material.AIR)){ablock.getRelative(0,-1,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,0,0).getType().equals(Material.AIR)){ablock.getRelative(1,0,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,0,0).getType().equals(Material.AIR)){ablock.getRelative(-1,0,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,0,1).getType().equals(Material.AIR)){ablock.getRelative(1,0,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,0,1).getType().equals(Material.AIR)){ablock.getRelative(-1,0,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,0,-1).getType().equals(Material.AIR)){ablock.getRelative(1,0,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,0,-1).getType().equals(Material.AIR)){ablock.getRelative(-1,0,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,0,1).getType().equals(Material.AIR)){ablock.getRelative(0,0,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,0,-1).getType().equals(Material.AIR)){ablock.getRelative(0,0,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-1,0).getType().equals(Material.AIR)){ablock.getRelative(1,-1,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-1,0).getType().equals(Material.AIR)){ablock.getRelative(-1,-1,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-1,1).getType().equals(Material.AIR)){ablock.getRelative(1,-1,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-1,1).getType().equals(Material.AIR)){ablock.getRelative(-1,-1,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-1,-1).getType().equals(Material.AIR)){ablock.getRelative(1,-1,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-1,-1).getType().equals(Material.AIR)){ablock.getRelative(-1,-1,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,-1,1).getType().equals(Material.AIR)){ablock.getRelative(0,-1,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,-1,-1).getType().equals(Material.AIR)){ablock.getRelative(0,-1,-1).setType(floor.get(random.nextInt(floor.size())));}
+                        }
+
+                        if(ablock.getRelative(0,-1,0).getType().equals(Material.TNT)){
+                                if(ablock.getRelative(0,-2,0).getType().equals(Material.AIR)){ablock.getRelative(0,-2,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-1,0).getType().equals(Material.AIR)){ablock.getRelative(1,-1,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-1,0).getType().equals(Material.AIR)){ablock.getRelative(-1,-1,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-1,1).getType().equals(Material.AIR)){ablock.getRelative(1,-1,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-1,1).getType().equals(Material.AIR)){ablock.getRelative(-1,-1,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-1,-1).getType().equals(Material.AIR)){ablock.getRelative(1,-1,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-1,-1).getType().equals(Material.AIR)){ablock.getRelative(-1,-1,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,-1,1).getType().equals(Material.AIR)){ablock.getRelative(0,-1,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,-1,-1).getType().equals(Material.AIR)){ablock.getRelative(0,-1,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-2,0).getType().equals(Material.AIR)){ablock.getRelative(1,-2,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-2,0).getType().equals(Material.AIR)){ablock.getRelative(-1,-2,0).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-2,1).getType().equals(Material.AIR)){ablock.getRelative(1,-2,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-2,1).getType().equals(Material.AIR)){ablock.getRelative(-1,-2,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(1,-2,-1).getType().equals(Material.AIR)){ablock.getRelative(1,-2,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(-1,-2,-1).getType().equals(Material.AIR)){ablock.getRelative(-1,-2,-1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,-2,1).getType().equals(Material.AIR)){ablock.getRelative(0,-2,1).setType(floor.get(random.nextInt(floor.size())));}
+                                if(ablock.getRelative(0,-2,-1).getType().equals(Material.AIR)){ablock.getRelative(0,-2,-1).setType(floor.get(random.nextInt(floor.size())));}
+                        }
+                }
+
                 
         }
 
@@ -389,5 +639,30 @@ class DungeonPopulator extends BlockPopulator{
                 // Check if the block update succeed, return the result
                 return state.update(update, physics);
             }
-        
+        public static void setupLauncher(Block block, int direction){
+                List<ItemStack> projectiles = new ArrayList<ItemStack>();
+                projectiles.add(new ItemStack(Material.ARROW,16));
+                projectiles.add(new ItemStack(Material.ARROW,16));
+                projectiles.add(new ItemStack(Material.ARROW,16));
+                projectiles.add(new ItemStack(Material.EGG,16));
+                projectiles.add(new ItemStack(Material.SNOW_BALL,16));
+                projectiles.add(new ItemStack(373, 5, (short) 16396));
+                projectiles.add(new ItemStack(373, 5, (short) 16420));
+                projectiles.add(new ItemStack(373, 5, (short) 16426));
+                projectiles.add(new ItemStack(373, 5, (short) 16424));
+                
+
+                block.setType(Material.DISPENSER);
+                BlockState state = block.getState();
+                state.setRawData((byte)direction);
+                state.update(true,true);
+                if(state instanceof Dispenser){
+                        Inventory inventory = ((Dispenser)state).getInventory();
+                        int count = StorySpirit.random.nextInt(9);
+                        for(int i = 0; i<count;i++){
+                                        inventory.addItem(projectiles.get(StorySpirit.random.nextInt(projectiles.size())));
+                        }
+                }
+                
+        }
 }

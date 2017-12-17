@@ -96,34 +96,7 @@ class Loot{
         ItemStack s = null;
 
         if(StorySpirit.random.nextFloat()<0.05f){
-
-            int count =0;
-            for(ItemStack i : named.keySet()){
-                if(i != null && named.get(i) !=null){
-                    count += named.get(i);
-                }else{
-                    System.out.println("no record in named for "+i.toString());
-                }
-            }
-            int selection = StorySpirit.random.nextInt(Math.max(1, count));
-            int fresh = 0;
-            for (ItemStack stack : named.keySet()) {
-                if(stack != null && named.get(stack) != null){
-                    fresh += named.get(stack);
-                    if(selection < fresh){
-                        s = new ItemStack(stack.getType(),1);
-                        break;
-                    }
-                }
-            }
-            if(s != null){
-                if(StorySpirit.random.nextFloat()<0.35){
-                    enchantItem(s);
-                    
-                    itemTweak(s, Namer.name(), null,new int[]{StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255), StorySpirit.random.nextInt(255)});
-                }
-                return s;
-            }
+            s = randomNamed();
         }
 
         int count =0;
@@ -140,12 +113,46 @@ class Loot{
             if(stack != null && loot.get(stack) != null){
             fresh += loot.get(stack);
             if(selection < fresh){
-                return stack;
+                return new ItemStack(stack.getType(),Math.max(1,StorySpirit.random.nextInt(stack.getAmount())));
             }}
             
         }
         return new ItemStack(Material.WOOD_SWORD);
     }
+
+    public static ItemStack randomNamed(){
+
+        ItemStack s = null;
+        int count =0;
+        for(ItemStack i : named.keySet()){
+            if(i != null && named.get(i) !=null){
+                count += named.get(i);
+            }else{
+                System.out.println("no record in named for "+i.toString());
+            }
+        }
+        int selection = StorySpirit.random.nextInt(Math.max(1, count));
+        int fresh = 0;
+        for (ItemStack stack : named.keySet()) {
+            if(stack != null && named.get(stack) != null){
+                fresh += named.get(stack);
+                if(selection < fresh){
+                    s = new ItemStack(stack.getType(),1);
+                    break;
+                }
+            }
+        }
+        if(s != null){
+            if(StorySpirit.random.nextFloat()<0.35){
+                enchantItem(s);
+                
+                itemTweak(s, Namer.name(), null,new int[]{StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255), StorySpirit.random.nextInt(255)});
+            }
+            return s;
+        }
+        return null;
+    }
+    
     static void itemTweak(ItemStack item,String name,String lore,int[] color){
         ItemMeta meta = item.getItemMeta();
         if(name != null && !name.equals("")){meta.setDisplayName(name);}
@@ -165,17 +172,19 @@ class Loot{
     static void enchantItem(ItemStack item){
         Enchantment e = null;
         int attempts = 0;
-        while(e == null || !e.canEnchantItem(item)){
-            e = Enchantment.getById(StorySpirit.random.nextInt(63));
-            attempts++;
-            if(attempts > 64){
-                return;
+        for(int i = 0;i<StorySpirit.random.nextInt(3); i++){
+            while(e == null || !e.canEnchantItem(item)){
+                e = Enchantment.getById(StorySpirit.random.nextInt(63));
+                attempts++;
+                if(attempts > 64){
+                    return;
+                }
             }
-        }
-        if(e.getMaxLevel()<1){
-            item.addEnchantment(e, 1);
-        }else{
-            item.addEnchantment(e, StorySpirit.random.nextInt(e.getMaxLevel())+1);
+            if(e.getMaxLevel()<1){
+                item.addEnchantment(e, 1);
+            }else{
+                item.addEnchantment(e, StorySpirit.random.nextInt(e.getMaxLevel())+1);
+            }
         }
     }
 }

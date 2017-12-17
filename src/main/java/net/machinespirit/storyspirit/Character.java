@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Witch;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -48,16 +49,28 @@ public static void spawn(World world, Location location, String type, Integer po
 }
 
 public static void spawn(World world, Location location,EntityType entityType,Integer points){
-    Entity entity = world.spawnEntity(location, entityType);
+    LivingEntity entity = (LivingEntity)world.spawnEntity(location, entityType);
 
     String name =Namer.name();
+    float modifier = 2;
     if(points > 16){
         name += " the "+Namer.random(Namer.titles);
+        modifier = 16;
     }else if(points > 12){
         name += " the "+Namer.random(Namer.adjectives);
+        modifier = 8;
     }else if(points > 10){
         name  = Namer.random(Namer.adjectives)+" "+name;
+        modifier = 4;
     }
+
+
+    entity.setMaxHealth(entity.getMaxHealth()*modifier);
+    entity.setHealth(entity.getHealth()*modifier);
+
+    entity.setRemoveWhenFarAway(false);
+
+    entity.setCanPickupItems(true);
     entity.setCustomName(name);
     entity.setCustomNameVisible(true);
 
