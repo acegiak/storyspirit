@@ -69,7 +69,6 @@ class DungeonPopulator extends BlockPopulator{
                 if(random.nextFloat()>1f/5f){
                         return;
                 }
-                System.out.println("A DUNGEON!");
                 Block origin = null;
                 
                 int ox = random.nextInt(15);
@@ -93,7 +92,6 @@ class DungeonPopulator extends BlockPopulator{
                         }
                 }
                 if(origin == null){
-                        System.out.println("NO ORIGIN!");
                         return;
                 }
 
@@ -123,7 +121,6 @@ class DungeonPopulator extends BlockPopulator{
         }
 
         public void buildRoom(Block origin,int xsize, int zsize, List<Material> roof, List<Material> wall, List<Material> floor, List<Material> crenellations, int interval,float branchChance,List<Block> origins, Random random){
-                System.out.println("BUILDING A ROOM");
                 xsize = (int)Math.floor((double)(xsize/2f))*2+1;
                 zsize = (int)Math.floor((double)(zsize/2f))*2+1;
                 if(origins == null){

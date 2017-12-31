@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.WorldInitEvent;
 
 public class StoryListener implements Listener
@@ -32,10 +33,14 @@ public class StoryListener implements Listener
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event){
+        System.out.println("player interacted!");
         if(event.getRightClicked() instanceof Villager){
             System.out.println("villiclicked");
             Character.villiconvert((Villager)event.getRightClicked());
-            event.getPlayer().sendMessage(event.getRightClicked().getCustomName()+": Hello, friend!");
+            if(event.getPlayer().isSneaking()){
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(Conversation.talk((Villager) event.getRightClicked(), event.getPlayer()));
+            }
         }
     }
 }

@@ -185,9 +185,9 @@ public static void villiconvert(Villager v){
     }
 }
 
-public static float villiOpinion(Villager v, Player p){
-    if(v.getMetadata(arg0))
-}
+// public static float villiOpinion(Villager v, Player p){
+//     if(v.getMetadata(arg0))
+// }
 
 
 }

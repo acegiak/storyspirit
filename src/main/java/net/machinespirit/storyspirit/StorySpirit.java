@@ -1,10 +1,13 @@
 package net.machinespirit.storyspirit;
 
 import java.util.Random;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class StorySpirit extends JavaPlugin {
     public static Random random;
+
+    public static Plugin current;
 
 
     @Override
@@ -14,7 +17,7 @@ public class StorySpirit extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        current = this;
         // Don't log enabling, Spigot does that for you automatically!
 
         // Commands enabled with following method must have entries in plugin.yml
