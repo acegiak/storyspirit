@@ -69,8 +69,9 @@ class DungeonPopulator extends BlockPopulator{
                 if(random.nextFloat()>1f/5f){
                         return;
                 }
+                System.out.println("A DUNGEON!");
                 Block origin = null;
-
+                
                 int ox = random.nextInt(15);
                 int oz =  random.nextInt(15);
                 for(int nx = 0;nx<15 && origin==null;nx++){
@@ -78,7 +79,7 @@ class DungeonPopulator extends BlockPopulator{
                                 int x = (ox+nx)%15;
                                 int z = (oz+nz)%15;
                                 ArrayList<Block> possibleOrigins = new ArrayList<Block>();
-                                for(int y = 0; y<250; y++){
+                                for(int y = 0; y<255; y++){
                                         Block test = chunk.getBlock(x,y,z);
                                         if(foundations.contains(test.getType())
                                         && air.contains(test.getRelative(0,1,0).getType())
@@ -92,6 +93,7 @@ class DungeonPopulator extends BlockPopulator{
                         }
                 }
                 if(origin == null){
+                        System.out.println("NO ORIGIN!");
                         return;
                 }
 
@@ -121,6 +123,7 @@ class DungeonPopulator extends BlockPopulator{
         }
 
         public void buildRoom(Block origin,int xsize, int zsize, List<Material> roof, List<Material> wall, List<Material> floor, List<Material> crenellations, int interval,float branchChance,List<Block> origins, Random random){
+                System.out.println("BUILDING A ROOM");
                 xsize = (int)Math.floor((double)(xsize/2f))*2+1;
                 zsize = (int)Math.floor((double)(zsize/2f))*2+1;
                 if(origins == null){
@@ -168,7 +171,7 @@ class DungeonPopulator extends BlockPopulator{
                                 if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(xmin,1,0), Material.IRON_DOOR_BLOCK, 8, true, true);
                                         setBlockType(origin.getRelative(xmin,0,0), Material.IRON_DOOR_BLOCK, 2, true, true);
-                                        setBlockType(origin.getRelative(xmin-1,1,1), Material.STONE_BUTTON, 1, true, true);
+                                        setBlockType(origin.getRelative(xmin-1,1,1), Material.STONE_BUTTON, 2, true, true);
                                 }else if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(xmin,1,0), Material.WOODEN_DOOR, 8, true, true);
                                         setBlockType(origin.getRelative(xmin,0,0), Material.WOODEN_DOOR, 2, true, true);
@@ -181,7 +184,7 @@ class DungeonPopulator extends BlockPopulator{
                                 if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(xmax,1,0), Material.IRON_DOOR_BLOCK, 8, true, true);
                                         setBlockType(origin.getRelative(xmax,0,0), Material.IRON_DOOR_BLOCK, 2, true, true);
-                                        setBlockType(origin.getRelative(xmax+1,1,1), Material.STONE_BUTTON, 2, true, true);
+                                        setBlockType(origin.getRelative(xmax+1,1,1), Material.STONE_BUTTON, 1, true, true);
                                 }else if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(xmax,1,0), Material.WOODEN_DOOR, 8, true, true);
                                         setBlockType(origin.getRelative(xmax,0,0), Material.WOODEN_DOOR, 2, true, true);
@@ -194,7 +197,7 @@ class DungeonPopulator extends BlockPopulator{
                                 if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(0,1,zmin), Material.IRON_DOOR_BLOCK, 8, true, true);
                                         setBlockType(origin.getRelative(0,0,zmin), Material.IRON_DOOR_BLOCK, 1, true, true);
-                                        setBlockType(origin.getRelative(1,1,zmin-1), Material.STONE_BUTTON, 1, true, true);
+                                        setBlockType(origin.getRelative(1,1,zmin-1), Material.STONE_BUTTON, 4, true, true);
 
                                 }else if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(0,1,zmin), Material.WOODEN_DOOR, 8, true, true);
@@ -208,7 +211,7 @@ class DungeonPopulator extends BlockPopulator{
                                 if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(0,1,zmax), Material.IRON_DOOR_BLOCK, 8, true, true);
                                         setBlockType(origin.getRelative(0,0,zmax), Material.IRON_DOOR_BLOCK, 1, true, true);
-                                        setBlockType(origin.getRelative(1,1,zmax+1), Material.STONE_BUTTON, 1, true, true);
+                                        setBlockType(origin.getRelative(1,1,zmax+1), Material.STONE_BUTTON, 3, true, true);
                                 }else if(random.nextFloat()<0.25f){
                                         setBlockType(origin.getRelative(0,1,zmax), Material.WOODEN_DOOR, 8, true, true);
                                         setBlockType(origin.getRelative(0,0,zmax), Material.WOODEN_DOOR, 4, true, true);

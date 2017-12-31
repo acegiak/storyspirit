@@ -7,6 +7,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.entity.Witch;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -173,7 +175,19 @@ static Object select(Object[] things, Integer points){
 }
 
 
+public static void villiconvert(Villager v){
+    //if(Character.characters.containsKey(v.getPersistentID())){
+    if(v.isCustomNameVisible()){
+        
+    }else{
+        v.setCustomName(Namer.name());
+        v.setCustomNameVisible(true);
+    }
+}
 
+public static float villiOpinion(Villager v, Player p){
+    if(v.getMetadata(arg0))
+}
 
 
 }
