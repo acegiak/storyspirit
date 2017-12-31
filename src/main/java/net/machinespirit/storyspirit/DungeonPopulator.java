@@ -43,7 +43,9 @@ class DungeonPopulator extends BlockPopulator{
                 Material.STONE,
                 Material.DIRT,
                 Material.SAND,
-                Material.SANDSTONE
+                Material.SANDSTONE,
+                Material.LOG,
+                Material.LOG_2
         ));
 
         public static ArrayList<Material> air = new ArrayList<Material>(Arrays.asList(
@@ -109,11 +111,21 @@ class DungeonPopulator extends BlockPopulator{
                         origin.getRelative(-1,0,1).setType(Material.getMaterial(208));
                         origin.getRelative(0,-1,0).setType(Material.CHEST);
                         fillchest(origin.getRelative(0,-1,0));
+                }else if(origin.getType().equals(Material.LOG)){
+                        ArrayList<Block> bigtree = new ArrayList<Block>(Arrays.asList(origin.getRelative(1,0,0),origin.getRelative(1,0,1),origin.getRelative(-1,0,0),origin.getRelative(-1,0,1),origin.getRelative(-1,0,-1),origin.getRelative(0,0,-1),origin.getRelative(-1,0,0),origin.getRelative(0,0,1)));
+                        int logcount = 0;
+                        for (Block b : bigtree) {
+                                if(b.getType().equals(Material.LOG)||b.getType().equals(Material.LOG_2)){
+                                        logcount++;
+                                }
+                        }
+                        if(logcount >= 3){
+                                buildRoom(origin.getRelative(0,1,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG), Arrays.asList(null,null,null,Material.LEAVES),1,0.5f,null, random);
+                        }
                 }else if(origin.getType().equals(Material.GRASS)){
                         buildRoom(origin.getRelative(0,1,0), 5, 5, Arrays.asList(Material.WOOD_STEP),  Arrays.asList(Material.ACACIA_FENCE),  Arrays.asList(Material.WOOD),Arrays.asList(null,null,Material.AIR), -3,0f,null, random);
                 }else if(origin.getType().equals(Material.SAND) || origin.getType().equals(Material.SANDSTONE )){
                         buildRoom(origin.getRelative(0,1,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE), Arrays.asList(null,null,null,Material.SANDSTONE_STAIRS),1,0.25f,null, random);
-                        
                 }else{
                         buildRoom(origin.getRelative(0,2,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK), Arrays.asList(null,null,null,Material.IRON_FENCE), 1,1f,null, random);
                 }
