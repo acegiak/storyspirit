@@ -11,8 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 
 
 public class Conversation {
@@ -21,24 +23,24 @@ public class Conversation {
 	public static String talk(Villager villi,Player p){
 		Character.villiconvert(villi);
 		
-		for(Object o : villi.getWorld().getLivingEntities()){
+		for(Object o : villi.getNearbyEntities(50, 50, 50)){
             if(o instanceof Villager){
                 Character.villiconvert((Villager) o);
-                // float avg = (gossip.opinionOf(p.getName())+talker.opinionOf(p.getName()))/2f;
-                // gossip.opinionGoes(p.getName(),(avg - gossip.opinionOf(p.getName()))*0.05f);
-                // talker.opinionGoes(p.getName(),(avg - talker.opinionOf(p.getName()))*0.05f);
+                float avg = (getOpinion((Villager)o,p)+getOpinion(villi,p))/2f;
+				changeOpinion((Villager)o,p,(avg - getOpinion((Villager)o,p))*0.05f);
+				changeOpinion(villi,p,(avg - getOpinion(villi,p))*0.05f);
             }
 		}
 		
 
 		ArrayList<ConversationPoint> points = new ArrayList<ConversationPoint>();
-		// String questy = null;
-		// if(Character.rand.nextFloat() < talker.opinionOf(p.getName())){
-		// 	questy = delivery(villi,p);
-		// }
-		// if(questy != null){
-		// 	return questy;
-		// }
+		String questy = null;
+		if(StorySpirit.random.nextFloat() < getOpinion(villi,p)){
+			questy = delivery(villi,p);
+		}
+		if(questy != null){
+			return questy;
+		}
 		
 		
 		String ret = villi.getCustomName()+": ";
@@ -95,9 +97,8 @@ public class Conversation {
 			if(point.give.getAmount() < 1){
 				point.give.setAmount(1);
 			}
-            System.out.print("GIVING ITEM: "+point.give.toString());
-            Item item = (Item)p.getWorld().spawnEntity(p.getLocation(), EntityType.DROPPED_ITEM);
-            item.setItemStack(point.give);
+			System.out.print("GIVING ITEM: "+point.give.toString());
+			p.getWorld().dropItem(p.getLocation(), point.give);
 		}
 
 		//System.out.println(talker.name+"("+villi.getPersistentID().toString()+":"+talker.id.toString()+")'s opinion of "+p.getName()+" is "+Float.toString(talker.opinionOf(p.getName())));
@@ -106,90 +107,89 @@ public class Conversation {
 	}
 	
 
-	// public static String delivery(Villager villi,Player player){
-	// 	if(Namer.rand.nextInt(StoryEventHandler.villagequestchance)<1){
-	// 		Character giver = Character.villiconvert((EntityLivingBase) villi);
-	
-	// 		Character c = Quest.questgiver(villi.worldObj, villi.getPosition());
-	// 		if(giver.id != c.id){
-	// 			String n = null;
-	// 			if(c != null){
-	// 				ItemStack s = null;
-	// 				switch(new Random().nextInt(5)){
-	// 				case 0:
-	// 					s = new ItemStack(Items.book);
-	// 					n= Namer.random(new String[]{"Note","Missive","Letter","Order","Instructions"})+" from "+giver.name;
-	// 					break;
-	// 				case 1:
-	// 					s = new ItemStack(Blocks.chest);
-	// 					n=Namer.random(new String[]{"Package","Bundle","Box","Order","Delivery"})+" from "+giver.name;
-	// 					break;
-	// 				case 2:
-	// 					s = new ItemStack(Items.paper);
-	// 					n=Namer.random(new String[]{"Note","Missive","Letter","Order","Instructions"})+" from "+giver.name;
-	// 					break;
-	// 				case 3:
-	// 					s = new ItemStack(Items.armor_stand);
-	// 					n=Namer.random(new String[]{"Doll","Gift","Contraption"})+" from "+giver.name;
-	// 					break;
-	// 				case 4:
-	// 					s = new ItemStack(Blocks.trapped_chest);
-	// 					n=Namer.random(new String[]{"Package","Bundle","Box","Order","Delivery"})+" from "+giver.name;
-	// 					break;
-	// 				case 5:
-	// 					s = new ItemStack(Items.rabbit_stew);
-	// 					n=Namer.random(new String[]{"Meal","Ingredients","Food","Bits","Delivery"})+" from "+giver.name;
-	// 					break;
-	// 				case 6:
-	// 					s = new ItemStack(Items.painting);
-	// 					n=Namer.random(new String[]{"Self Portait","Lewd Illustration","Mysterious Landscape","Abstract Art"})+" from "+giver.name;
-	// 					break;
-	// 				case 7:
-	// 					s = new ItemStack(Items.wooden_hoe);
-	// 					n=Namer.random(new String[]{"Old Tool","Dirty Hoe","Spare Hoe","Broken Tool"})+" from "+giver.name;
-	// 					break;
+	public static String delivery(Villager villi,Player player){
+		if(Namer.rand.nextInt(10)<1){
+
+			String villagerId = (String) DataLayer.db.opinions.keySet().toArray()[StorySpirit.random.nextInt(DataLayer.db.opinions.keySet().size())];
+
+			String villagerName = DataLayer.getName(villagerId);
+			if(!villagerId.equals(villi.getUniqueId().toString())){
+					ItemStack s = null;
+					String n = "Oddment";
+					switch(StorySpirit.random.nextInt(7)){
+					case 0:
+						s = new ItemStack(Material.BOOK);
+						n= Namer.random(new String[]{"Note","Missive","Letter","Order","Instructions"})+" from "+villi.getCustomName();
+						break;
+					case 1:
+						s = new ItemStack(Material.CHEST);
+						n=Namer.random(new String[]{"Package","Bundle","Box","Order","Delivery"})+" from "+villi.getCustomName();
+						break;
+					case 2:
+						s = new ItemStack(Material.PAPER);
+						n=Namer.random(new String[]{"Note","Missive","Letter","Order","Instructions"})+" from "+villi.getCustomName();
+						break;
+					case 3:
+						s = new ItemStack(Material.ARMOR_STAND);
+						n=Namer.random(new String[]{"Doll","Gift","Contraption"})+" from "+villi.getCustomName();
+						break;
+					case 4:
+						s = new ItemStack(Material.TRAPPED_CHEST);
+						n=Namer.random(new String[]{"Package","Bundle","Box","Order","Delivery"})+" from "+villi.getCustomName();
+						break;
+					case 5:
+						s = new ItemStack(Material.RABBIT_STEW);
+						n=Namer.random(new String[]{"Meal","Ingredients","Food","Bits","Delivery"})+" from "+villi.getCustomName();
+						break;
+					case 6:
+						s = new ItemStack(Material.PAINTING);
+						n=Namer.random(new String[]{"Self Portait","Lewd Illustration","Mysterious Landscape","Abstract Art"})+" from "+villi.getCustomName();
+						break;
+					case 7:
+						s = new ItemStack(Material.WOOD_HOE);
+						n=Namer.random(new String[]{"Old Tool","Dirty Hoe","Spare Hoe","Broken Tool"})+" from "+villi.getCustomName();
+						break;
 						
-	// 				}
+					}
 		
-	// 				NBTTagCompound display = new NBTTagCompound();
-	// 				NBTTagCompound l = new NBTTagCompound();
-	// 				NBTTagList lr = new NBTTagList();
+					ItemMeta m = s.getItemMeta();
 					
-	// 				l.setString("Name",n );
-	// 				lr.appendTag(new NBTTagString("Delivery for "+c.name));
-	// 				l.setTag("Lore", lr);
-	// 				display.setTag("display", l);
-	// 				s.setTagCompound(display);
-	// 				Quest q = new Quest();
-	// 				q.loot = n;
-	// 				q.questgiver = c ;
-	// 				q.title = "Deliver "+n+" to "+c.name;
-	// 				q.shortname = n;
-	// 				Entity e = c.getEntity();
-	// 				if(e == null){
-	// 					return null;
-	// 				}
-	// 				q.lootPos = c.getPosition();
-	// 				q.store();
-	// 				villi.worldObj.spawnEntityInWorld(new EntityItem(villi.worldObj,villi.posX,villi.posY,villi.posZ,s));
-	// 				return villi.getName()+": Please take this to "+c.name+(new Random().nextBoolean()?"":" to the "+q.DirectionFrom(villi.getPosition()))+".";
-	// 			}
-	// 		}
+					m.setDisplayName(n);;
+					m.setLore(Arrays.asList(new String[]{"Delivery for "+villagerName}));
+					s.setItemMeta(m);
+					player.getWorld().dropItem(player.getLocation(), s);
+					return villi.getName()+": Please take this to "+villagerName+".";
+				}
+			}
 			
-	// 	}
-	// 	return null;
-    // }
+		
+		return null;
+    }
     
     static public float getOpinion(Villager villi, Player p){
-        if(!villi.hasMetadata(p.getUniqueId().toString()+":opinion")){
-            Opinion defaultvalue = new Opinion(0.5f);
-            villi.setMetadata(p.getUniqueId().toString()+":opinion",defaultvalue);
+        if(DataLayer.getOpinion(villi) == Float.NEGATIVE_INFINITY){
+            DataLayer.setOpinion(villi, 0.5f);
         }
-        return villi.getMetadata(p.getUniqueId().toString()+":opinion").get(0).asFloat();
+        return DataLayer.getOpinion(villi);
     }
 
     static public void changeOpinion(Villager villi, Player p, float mod){
-        float existing = villi.getMetadata(p.getUniqueId().toString()+":opinion").get(0).asFloat();
-        villi.setMetadata(p.getUniqueId().toString()+":opinion",new Opinion(existing+mod));
-    }
+        if(DataLayer.getOpinion(villi) == Float.NEGATIVE_INFINITY){
+            DataLayer.setOpinion(villi, 0.5f);
+        }
+		float existing = DataLayer.getOpinion(villi);
+		System.out.println(p.getName()+"'s reputation with "+villi.getCustomName()+" changed by "+Float.toString(mod)+" to "+Float.toString(existing+mod));
+        DataLayer.setOpinion(villi,existing+mod);
+	}
+	
+	static public void publicOpinion(Player p, float amount){
+
+		for(Entity o : p.getNearbyEntities(50, 50, 50)){
+            if(o instanceof Villager){
+                Character.villiconvert((Villager) o);
+				changeOpinion((Villager)o,p,amount);
+				o.getWorld().spawnParticle(Particle.HEART, o.getLocation().add(0, 0.5f, 0),(int)amount*100);
+            }
+		}
+	}
 }

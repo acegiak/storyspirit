@@ -4,16 +4,32 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Bat;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Llama;
+import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Parrot;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Squid;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.potion.PotionEffectType;
+
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.machinespirit.storyspirit.Namer;
 import net.machinespirit.storyspirit.StorySpirit;
@@ -51,10 +67,14 @@ public static void spawn(World world, Location location, String type, Integer po
 }
 
 public static void spawn(World world, Location location,EntityType entityType,Integer points){
+    int startingPoints = points;
     LivingEntity entity = (LivingEntity)world.spawnEntity(location, entityType);
+
+    Boolean questTarget = false;
 
     String name =Namer.name();
     float modifier = 2;
+
     if(points > 16){
         name += " the "+Namer.random(Namer.titles);
         modifier = 16;
@@ -153,11 +173,22 @@ public static void spawn(World world, Location location,EntityType entityType,In
         ((LivingEntity)entity).getEquipment().setLeggings(pants);
         ((LivingEntity)entity).getEquipment().setBoots(shoes);
         ((LivingEntity)entity).getEquipment().setItemInHand(tool);
-        ((LivingEntity)entity).getEquipment().setHelmetDropChance(0.3f);
-        ((LivingEntity)entity).getEquipment().setChestplateDropChance(0.3f);
-        ((LivingEntity)entity).getEquipment().setLeggingsDropChance(0.3f);
-        ((LivingEntity)entity).getEquipment().setBootsDropChance(0.3f);
-        ((LivingEntity)entity).getEquipment().setItemInHandDropChance(0.3f);
+        ((LivingEntity)entity).getEquipment().setHelmetDropChance(0.35f);
+        ((LivingEntity)entity).getEquipment().setChestplateDropChance(0.35f);
+        ((LivingEntity)entity).getEquipment().setLeggingsDropChance(0.35f);
+        ((LivingEntity)entity).getEquipment().setBootsDropChance(0.35f);
+        ((LivingEntity)entity).getEquipment().setItemInHandDropChance(0.35f);
+    }
+
+    if(entity instanceof Pig || entity instanceof Cow || entity instanceof Sheep || entity instanceof Llama || entity instanceof Rabbit || entity instanceof Horse || entity instanceof Squid || entity instanceof Chicken || entity instanceof Bat || entity instanceof Wolf || entity instanceof Ocelot || entity instanceof Parrot){
+        ArrayList<PotionEffectType> types = new ArrayList<PotionEffectType>(Arrays.asList(PotionEffectType.DAMAGE_RESISTANCE,PotionEffectType.FAST_DIGGING,PotionEffectType.HEAL,PotionEffectType.FIRE_RESISTANCE,PotionEffectType.GLOWING,PotionEffectType.HEALTH_BOOST,PotionEffectType.INVISIBILITY,PotionEffectType.JUMP,PotionEffectType.LEVITATION,PotionEffectType.INCREASE_DAMAGE,PotionEffectType.REGENERATION,PotionEffectType.NIGHT_VISION,PotionEffectType.LUCK,PotionEffectType.SPEED,PotionEffectType.WATER_BREATHING, PotionEffectType.BLINDNESS,PotionEffectType.SLOW,PotionEffectType.CONFUSION));
+        LivingEntity friend = (LivingEntity)entity;
+        if(DataLayer.getBlessing(friend) == null){
+            DataLayer.setBlessing(friend, types.get(StorySpirit.random.nextInt(types.size())));
+        }
+        friend.addScoreboardTag("friend");
+    }else if(!(entity instanceof Villager) && startingPoints > 10){
+        ((LivingEntity)entity).addScoreboardTag("foe");
     }
 
 }

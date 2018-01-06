@@ -61,14 +61,14 @@ class DungeonPopulator extends BlockPopulator{
                         Material.TRIPWIRE,
                         Material.TRIPWIRE_HOOK
         ));
-        public static float treasureRate = 0.05f;
+        public static float treasureRate = 0.025f;
         public static float trapRate = 0.05f;
         public static float spawnerRate = 0.10f;
         public static float decoRate = 0.05f;
         
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
-                if(random.nextFloat()>1f/5f){
+                if(random.nextFloat()>1f/200f){
                         return;
                 }
                 Block origin = null;
@@ -259,6 +259,25 @@ class DungeonPopulator extends BlockPopulator{
                 }else if(random.nextFloat()<spawnerRate ){
                         Character.spawn(origin.getWorld(), origin.getRelative(0,1,0).getLocation(), "foe", random.nextInt(20));
                         traps = false;
+                }else if(random.nextFloat()<spawnerRate*0.5f ){
+                        Character.spawn(origin.getWorld(), origin.getRelative(0,1,0).getLocation(), "friend", random.nextInt(20));
+                        traps = false;
+                        origin.getRelative(1,1,0).setType(Material.IRON_FENCE);
+                        origin.getRelative(1,1,1).setType(Material.IRON_FENCE);
+                        origin.getRelative(1,1,-1).setType(Material.IRON_FENCE);
+                        origin.getRelative(-1,1,0).setType(Material.IRON_FENCE);
+                        origin.getRelative(-1,1,1).setType(Material.IRON_FENCE);
+                        origin.getRelative(-1,1,-1).setType(Material.IRON_FENCE);
+                        origin.getRelative(0,1,1).setType(Material.IRON_FENCE);
+                        origin.getRelative(0,1,-1).setType(Material.IRON_FENCE);
+                        origin.getRelative(1,0,0).setType(Material.IRON_FENCE);
+                        origin.getRelative(1,0,1).setType(Material.IRON_FENCE);
+                        origin.getRelative(1,0,-1).setType(Material.IRON_FENCE);
+                        origin.getRelative(-1,0,0).setType(Material.IRON_FENCE);
+                        origin.getRelative(-1,0,1).setType(Material.IRON_FENCE);
+                        origin.getRelative(-1,0,-1).setType(Material.IRON_FENCE);
+                        origin.getRelative(0,0,1).setType(Material.IRON_FENCE);
+                        origin.getRelative(0,0,-1).setType(Material.IRON_FENCE);
                 }
 
                 
