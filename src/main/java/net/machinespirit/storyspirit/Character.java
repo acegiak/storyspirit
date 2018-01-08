@@ -186,9 +186,11 @@ public static void spawn(World world, Location location,EntityType entityType,In
         if(DataLayer.getBlessing(friend) == null){
             DataLayer.setBlessing(friend, types.get(StorySpirit.random.nextInt(types.size())));
         }
+        DataLayer.setLost(entity);
         friend.addScoreboardTag("friend");
     }else if(!(entity instanceof Villager) && startingPoints > 10){
         ((LivingEntity)entity).addScoreboardTag("foe");
+        DataLayer.setBoss(entity);
     }
 
 }

@@ -91,6 +91,9 @@ public class StoryListener implements Listener
                 if(e instanceof Villager){
                     event.getRightClicked().removeScoreboardTag("friend");
                     Quest.complete(event.getPlayer(), "Deliver "+event.getRightClicked().getCustomName()+" to safety");
+                    if(DataLayer.db.lostFriends.containsKey(event.getRightClicked().getUniqueId().toString())){
+                        DataLayer.db.lostFriends.remove(event.getRightClicked().getUniqueId().toString());
+                    }
                     break;
                 }
             }
@@ -109,6 +112,11 @@ public class StoryListener implements Listener
             if(event.getEntity().getKiller() != null && event.getEntity().getKiller() instanceof Player){
 
                 Quest.complete(event.getEntity().getKiller(), "Defeat "+event.getEntity().getCustomName());
+
+
+                if(DataLayer.db.bosses.containsKey(event.getEntity().getUniqueId().toString())){
+                    DataLayer.db.bosses.remove(event.getEntity().getUniqueId().toString());
+                }
             }
         }
 

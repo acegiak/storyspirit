@@ -10,6 +10,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.inventory.MerchantInventory;
@@ -67,12 +68,38 @@ public class Conversation {
 				choices.add("If you see any "+recipe.getIngredients().get(0).getType().toString().replace('_', ' ')+" let me know.");
 			}
 		}
-		// // for(Quest q : Quest.quests){
-		// 	String qtext = q.QuestText(villi);
-		// 	if(qtext != null){
-		// 		choices.add(qtext);
-		// 	}
-		// }
+		for(int i = 0; i<12;i++){
+			int choice = StorySpirit.random.nextInt(2);
+			if(choice == 0){
+				int r = StorySpirit.random.nextInt(DataLayer.db.bosses.keySet().size());
+				String bossId = (String) DataLayer.db.bosses.keySet().toArray()[r];
+				String bossName = (String) DataLayer.db.names.get(bossId);
+				Location l = new Location(villi.getWorld(),DataLayer.db.bosses.get(bossId)[0],DataLayer.db.bosses.get(bossId)[1],DataLayer.db.bosses.get(bossId)[2]);
+				if(l.distance(villi.getLocation()) < 1000){
+					switch(StorySpirit.random.nextInt(5)){
+					case(0):choices.add("I heard "+bossName+" has been seen nearby!");break;
+					case(1):choices.add("I'm scared of "+bossName+"!");break;
+					case(2):choices.add("If you leave town, watch out for "+bossName+".");break;
+					case(3):choices.add(bossName+" has been seen nearby. Be careful.");break;
+					case(4):choices.add("I can't sleep for all these rumours of the evil "+bossName+"!");break;
+					}
+				}
+			}else if(choice == 1){
+				int r = StorySpirit.random.nextInt(DataLayer.db.lostFriends.keySet().size());
+				String friendId = (String) DataLayer.db.lostFriends.keySet().toArray()[r];
+				String friendName = (String) DataLayer.db.names.get(friendId);
+				Location l = new Location(villi.getWorld(),DataLayer.db.lostFriends.get(friendId)[0],DataLayer.db.lostFriends.get(friendId)[1],DataLayer.db.lostFriends.get(friendId)[2]);
+				if(l.distance(villi.getLocation()) < 1000){
+					switch(StorySpirit.random.nextInt(5)){
+						case(0):choices.add("I heard "+friendName+" is lost in the wild!");break;
+						case(1):choices.add("Have you seen "+friendName+"? I can't find them anywhere!");break;
+						case(2):choices.add(friendName+" is missing! I'm so worried!");break;
+						case(3):choices.add(friendName+" is out there all alone! They must be so scared!");break;
+						case(4):choices.add("We can't find "+friendName+"! I hope they're not lost!");break;
+					}
+				}
+			}
+		}
 		String[] c = choices.toArray(new String[choices.size()]);
 		
 		points.addAll(ConversationPoint.FromStringset(c, 5f, -0.5f, -0.005f));
@@ -167,19 +194,19 @@ public class Conversation {
     }
     
     static public float getOpinion(Villager villi, Player p){
-        if(DataLayer.getOpinion(villi) == Float.NEGATIVE_INFINITY){
-            DataLayer.setOpinion(villi, 0.5f);
+        if(DataLayer.getOpinion(villi,p) == Float.NEGATIVE_INFINITY){
+            DataLayer.setOpinion(villi,p, 0.5f);
         }
-        return DataLayer.getOpinion(villi);
+        return DataLayer.getOpinion(villi,p);
     }
 
     static public void changeOpinion(Villager villi, Player p, float mod){
-        if(DataLayer.getOpinion(villi) == Float.NEGATIVE_INFINITY){
-            DataLayer.setOpinion(villi, 0.5f);
+        if(DataLayer.getOpinion(villi,p) == Float.NEGATIVE_INFINITY){
+            DataLayer.setOpinion(villi,p, 0.5f);
         }
-		float existing = DataLayer.getOpinion(villi);
+		float existing = DataLayer.getOpinion(villi,p);
 		System.out.println(p.getName()+"'s reputation with "+villi.getCustomName()+" changed by "+Float.toString(mod)+" to "+Float.toString(existing+mod));
-        DataLayer.setOpinion(villi,existing+mod);
+        DataLayer.setOpinion(villi,p,existing+mod);
 	}
 	
 	static public void publicOpinion(Player p, float amount){

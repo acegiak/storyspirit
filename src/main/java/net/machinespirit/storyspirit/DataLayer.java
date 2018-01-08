@@ -1,4 +1,5 @@
 package net.machinespirit.storyspirit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -88,11 +89,14 @@ public class DataLayer {
     }
 
 
-    public static void setOpinion(Entity entity, float opinionValue){
+    public static void setOpinion(Entity entity, Player player, float opinionValue){
         if(db.opinions == null){
-            db.opinions = new HashMap<String,Float>();
+            db.opinions = new HashMap<String,HashMap<String,Float>>();
         }
-        db.opinions.put(entity.getUniqueId().toString(), opinionValue);
+        if(!db.opinions.containsKey(entity.getUniqueId().toString())){
+            db.opinions.put(entity.getUniqueId().toString(), new HashMap<String,Float>());
+        }
+        db.opinions.get(entity.getUniqueId().toString()).put(player.getUniqueId().toString(), opinionValue);
         save();
         setName(entity);
     }
@@ -101,7 +105,7 @@ public class DataLayer {
         return db.names.get(id);
     }
 
-    public static float getOpinion(Entity entity){
+    public static float getOpinion(Entity entity, Player player){
         if(db.opinions == null){
             return Float.NEGATIVE_INFINITY;
         }
@@ -109,7 +113,25 @@ public class DataLayer {
             return Float.NEGATIVE_INFINITY;
         }
 
-        return db.opinions.get(entity.getUniqueId().toString());
+        return db.opinions.get(entity.getUniqueId().toString()).get(player.getUniqueId().toString());
+    }
+
+    public static void setBoss(Entity entity){
+        if(db.bosses == null){
+            db.bosses = new HashMap<String,double[]>();
+        }
+        db.bosses.put(entity.getUniqueId().toString(), new double[]{entity.getLocation().getX(),entity.getLocation().getY(),entity.getLocation().getZ()});
+        save();
+        setName(entity);
+    }
+
+    public static void setLost(Entity entity){
+        if(db.lostFriends == null){
+            db.lostFriends = new HashMap<String,double[]>();
+        }
+        db.lostFriends.put(entity.getUniqueId().toString(), new double[]{entity.getLocation().getX(),entity.getLocation().getY(),entity.getLocation().getZ()});
+        save();
+        setName(entity);
     }
 
 
