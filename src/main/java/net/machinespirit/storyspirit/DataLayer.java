@@ -2,6 +2,7 @@ package net.machinespirit.storyspirit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.potion.PotionEffectType;
 
 import com.google.gson.Gson;
@@ -15,7 +16,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 
@@ -23,14 +26,15 @@ public class DataLayer {
     public static File flatFile;
     public static JSONdb db;
     public static Gson parser = new Gson();
+    public static HashMap<UUID,List<MerchantRecipe>> witchInventories = new HashMap<UUID,List<MerchantRecipe>>();
 
 
-    public static void onLoad(File dataFolder){
+    public static void onLoad(File dataFolder,String worldname){
 
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
-        flatFile = new File(dataFolder, "storyspirit.json");
+        flatFile = new File(dataFolder, "storyspirit-"+worldname+".json");
         try {
             if (!flatFile.exists()) {
                 
@@ -109,7 +113,7 @@ public class DataLayer {
         if(db.opinions == null){
             return Float.NEGATIVE_INFINITY;
         }
-        if(!db.opinions.containsKey(entity.getUniqueId().toString())){
+        if(!db.opinions.containsKey(entity.getUniqueId().toString()) || db.opinions.get(entity.getUniqueId().toString()) == null || !db.opinions.get(entity.getUniqueId().toString()).containsKey(player.getUniqueId().toString())){
             return Float.NEGATIVE_INFINITY;
         }
 

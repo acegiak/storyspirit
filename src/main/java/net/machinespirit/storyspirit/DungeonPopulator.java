@@ -68,7 +68,7 @@ class DungeonPopulator extends BlockPopulator{
         
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
-                if(random.nextFloat()>1f/200f){
+                if(random.nextFloat()>1f/5f){
                         return;
                 }
                 Block origin = null;
@@ -112,7 +112,8 @@ class DungeonPopulator extends BlockPopulator{
                         origin.getRelative(0,-1,0).setType(Material.CHEST);
                         fillchest(origin.getRelative(0,-1,0));
                 }else if(origin.getType().equals(Material.LOG)){
-                        ArrayList<Block> bigtree = new ArrayList<Block>(Arrays.asList(origin.getRelative(1,0,0),origin.getRelative(1,0,1),origin.getRelative(-1,0,0),origin.getRelative(-1,0,1),origin.getRelative(-1,0,-1),origin.getRelative(0,0,-1),origin.getRelative(-1,0,0),origin.getRelative(0,0,1)));
+                        ArrayList<Block> bigtree = new ArrayList<Block>(Arrays.asList(origin.getRelative(1,0,0),origin.getRelative(1,0,1),origin.getRelative(-1,0,0),origin.getRelative(-1,0,1),origin.getRelative(-1,0,-1),origin.getRelative(0,0,-1),origin.getRelative(-1,0,0),origin.getRelative(0,0,1),
+                        origin.getRelative(1,-1,0),origin.getRelative(1,-1,1),origin.getRelative(-1,-1,0),origin.getRelative(-1,-1,1),origin.getRelative(-1,-1,-1),origin.getRelative(0,-1,-1),origin.getRelative(-1,-1,0),origin.getRelative(0,-1,1)));
                         int logcount = 0;
                         for (Block b : bigtree) {
                                 if(b.getType().equals(Material.LOG)||b.getType().equals(Material.LOG_2)){
@@ -120,7 +121,7 @@ class DungeonPopulator extends BlockPopulator{
                                 }
                         }
                         if(logcount >= 3){
-                                buildRoom(origin.getRelative(0,1,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG), Arrays.asList(null,null,null,Material.LEAVES),1,0.5f,null, random);
+                                buildRoom(origin.getRelative(0,-4,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG), Arrays.asList(null,null,null,Material.LEAVES),1,0.5f,null, random);
                         }
                 }else if(origin.getType().equals(Material.GRASS)){
                         buildRoom(origin.getRelative(0,1,0), 5, 5, Arrays.asList(Material.WOOD_STEP),  Arrays.asList(Material.ACACIA_FENCE),  Arrays.asList(Material.WOOD),Arrays.asList(null,null,Material.AIR), -3,0f,null, random);

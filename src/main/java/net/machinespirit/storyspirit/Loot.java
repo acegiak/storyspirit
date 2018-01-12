@@ -2,6 +2,7 @@ package net.machinespirit.storyspirit;
 
 import net.machinespirit.storyspirit.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,8 +97,8 @@ class Loot{
     public static ItemStack randomItem(){
         ItemStack s = null;
 
-        if(StorySpirit.random.nextFloat()<0.05f){
-            s = randomNamed();
+        if(StorySpirit.random.nextFloat()<0.15f){
+            return randomNamed();
         }
 
         int count =0;
@@ -143,14 +144,27 @@ class Loot{
                 }
             }
         }
+
+        String lore = null;
+        if(StorySpirit.random.nextFloat()<0.5 && DataLayer.db.opinions != null && DataLayer.db.opinions.size()>0){
+            String villid = (String)DataLayer.db.opinions.keySet().toArray()[StorySpirit.random.nextInt(DataLayer.db.opinions.size())];
+            String villiname = DataLayer.db.names.get(villid);
+            String[] loreOptions = new String[]{"Property of "+villiname, villiname+"'s lost "+s.getType().toString().replace("_", " ").toLowerCase(),"Belongs to "+villiname};
+            lore = loreOptions[StorySpirit.random.nextInt(loreOptions.length)];
+            ItemMeta meta = s.getItemMeta();
+            meta.setLore(Arrays.asList(new String[]{lore}));
+        }
+
+
         if(s != null){
-            if(StorySpirit.random.nextFloat()<0.35){
+            if(StorySpirit.random.nextFloat()<0.5){
                 enchantItem(s);
                 
-                itemTweak(s, Namer.name(), null,new int[]{StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255), StorySpirit.random.nextInt(255)});
+                itemTweak(s, Namer.name(), lore,new int[]{StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255), StorySpirit.random.nextInt(255)});
             }
             return s;
         }
+
         return null;
     }
     

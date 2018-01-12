@@ -40,9 +40,6 @@ public class StorySpirit extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new StoryListener(), this);
 
-        random = new Random();
-        DataLayer.onLoad(getDataFolder());
-
         //VILLAGE INFO
 
         // get config
@@ -62,6 +59,12 @@ public class StorySpirit extends JavaPlugin {
 			}
 		}
 		catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e){e.printStackTrace();}
+
+        random = new Random();
+        String worldName = getServer().getName();
+        DataLayer.onLoad(getDataFolder(),worldName);
+
+
     }
 
 

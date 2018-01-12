@@ -21,8 +21,10 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -30,7 +32,10 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+
 import net.machinespirit.storyspirit.Namer;
 import net.machinespirit.storyspirit.StorySpirit;
 
@@ -178,6 +183,10 @@ public static void spawn(World world, Location location,EntityType entityType,In
         ((LivingEntity)entity).getEquipment().setLeggingsDropChance(0.35f);
         ((LivingEntity)entity).getEquipment().setBootsDropChance(0.35f);
         ((LivingEntity)entity).getEquipment().setItemInHandDropChance(0.35f);
+    }
+
+    if(entity instanceof Witch && StorySpirit.random.nextBoolean()){
+        entity.addScoreboardTag("nice");
     }
 
     if(entity instanceof Pig || entity instanceof Cow || entity instanceof Sheep || entity instanceof Llama || entity instanceof Rabbit || entity instanceof Horse || entity instanceof Squid || entity instanceof Chicken || entity instanceof Bat || entity instanceof Wolf || entity instanceof Ocelot || entity instanceof Parrot){
