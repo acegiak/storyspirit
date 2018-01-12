@@ -83,22 +83,25 @@ public class StoryListener implements Listener
         }
         PotionEffectType type = DataLayer.getBlessing(event.getRightClicked());
         if(event.getPlayer().isSneaking() && type != null){
-            event.getPlayer().addPotionEffect(new PotionEffect(type,20*90,1));
-            event.getRightClicked().getWorld().spawnParticle(Particle.SPELL_WITCH, event.getRightClicked().getLocation().add(0, 0.5f, 0),10);
-        }
-        if(event.getRightClicked().getScoreboardTags().contains("friend")){
-            for (org.bukkit.entity.Entity e : event.getRightClicked().getNearbyEntities(25, 10, 25)) {
-                if(e instanceof Villager){
-                    event.getRightClicked().removeScoreboardTag("friend");
-                    Quest.complete(event.getPlayer(), "Deliver "+event.getRightClicked().getCustomName()+" to safety");
-                    if(DataLayer.db.lostFriends.containsKey(event.getRightClicked().getUniqueId().toString())){
-                        DataLayer.db.lostFriends.remove(event.getRightClicked().getUniqueId().toString());
+            if(event.getRightClicked().getScoreboardTags().contains("friend")){
+                for (org.bukkit.entity.Entity e : event.getRightClicked().getNearbyEntities(25, 10, 25)) {
+                    if(e instanceof Villager){
+                        event.getRightClicked().removeScoreboardTag("friend");
+                        Quest.complete(event.getPlayer(), "Deliver "+event.getRightClicked().getCustomName()+" to safety");
+                        if(DataLayer.db.lostFriends.containsKey(event.getRightClicked().getUniqueId().toString())){
+                            DataLayer.db.lostFriends.remove(event.getRightClicked().getUniqueId().toString());
+                        }
+                        break;
                     }
-                    break;
                 }
+    
             }
-
+            
+                event.getPlayer().addPotionEffect(new PotionEffect(type,20*90,1));
+                event.getRightClicked().getWorld().spawnParticle(Particle.SPELL_WITCH, event.getRightClicked().getLocation().add(0, 0.5f, 0),10);
+            
         }
+        
     }
 
     @EventHandler
