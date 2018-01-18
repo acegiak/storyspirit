@@ -14,5 +14,7 @@ public class JSONdb {
     public HashMap<String,Integer> blessings;
     public HashMap<String,double[]> bosses;
     public HashMap<String,double[]> lostFriends;
+    // public static HashMap<String,HashMap> witchInventories = new HashMap<String,List<MerchantRecipe>>();
+
     
 }

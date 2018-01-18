@@ -52,7 +52,9 @@ class DungeonPopulator extends BlockPopulator{
                 Material.AIR,
                 Material.LEAVES,
                 Material.SNOW,
-                Material.GRASS
+                Material.GRASS,
+                Material.LEAVES_2,
+                Material.VINE
         ));
 
         public static ArrayList<Material> dontTouch = new ArrayList<Material>(Arrays.asList(
@@ -68,18 +70,18 @@ class DungeonPopulator extends BlockPopulator{
         
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
-                if(random.nextFloat()>1f/5f){
+                if(random.nextFloat()>1f/200f){
                         return;
                 }
                 Block origin = null;
                 
                 int ox = random.nextInt(15);
                 int oz =  random.nextInt(15);
+                ArrayList<Block> possibleOrigins = new ArrayList<Block>();
                 for(int nx = 0;nx<15 && origin==null;nx++){
                         for(int nz = 0;nz<15 && origin==null;nz++){
                                 int x = (ox+nx)%15;
                                 int z = (oz+nz)%15;
-                                ArrayList<Block> possibleOrigins = new ArrayList<Block>();
                                 for(int y = 0; y<255; y++){
                                         Block test = chunk.getBlock(x,y,z);
                                         if(foundations.contains(test.getType())
@@ -88,15 +90,16 @@ class DungeonPopulator extends BlockPopulator{
                                                 possibleOrigins.add(test);
                                         }
                                 }
-                                if(possibleOrigins.size() > 0){
-                                        origin = possibleOrigins.get(random.nextInt(possibleOrigins.size()));
-                                }
                         }
+                }
+                System.out.println("POSSIBLE ORIGINS:"+Integer.toString(possibleOrigins.size()));
+                if(possibleOrigins.size() > 0){
+                        origin = possibleOrigins.get(random.nextInt(possibleOrigins.size()));
                 }
                 if(origin == null){
                         return;
                 }
-
+                System.out.println("CHOSE:"+origin.toString());
 
                 if(origin.getType().equals(Material.GRASS) && origin.getRelative(0,1,0).getType().equals(Material.AIR) &&
                 origin.getRelative(1,0,1).getType().equals(Material.GRASS) && air.contains(origin.getRelative(1,1,1).getType()) &&
@@ -111,19 +114,23 @@ class DungeonPopulator extends BlockPopulator{
                         origin.getRelative(-1,0,1).setType(Material.getMaterial(208));
                         origin.getRelative(0,-1,0).setType(Material.CHEST);
                         fillchest(origin.getRelative(0,-1,0));
-                }else if(origin.getType().equals(Material.LOG)){
+                }else if(origin.getType().equals(Material.LOG) || origin.getType().equals(Material.LOG_2) ){
+                        System.out.println("GONNA TRY MAKE A TREEHOUSE, MA");
                         ArrayList<Block> bigtree = new ArrayList<Block>(Arrays.asList(origin.getRelative(1,0,0),origin.getRelative(1,0,1),origin.getRelative(-1,0,0),origin.getRelative(-1,0,1),origin.getRelative(-1,0,-1),origin.getRelative(0,0,-1),origin.getRelative(-1,0,0),origin.getRelative(0,0,1),
-                        origin.getRelative(1,-1,0),origin.getRelative(1,-1,1),origin.getRelative(-1,-1,0),origin.getRelative(-1,-1,1),origin.getRelative(-1,-1,-1),origin.getRelative(0,-1,-1),origin.getRelative(-1,-1,0),origin.getRelative(0,-1,1)));
+                        origin.getRelative(1,-1,0),origin.getRelative(1,-1,1),origin.getRelative(-1,-1,0),origin.getRelative(-1,-1,1),origin.getRelative(-1,-1,-1),origin.getRelative(0,-1,-1),origin.getRelative(-1,-1,0),origin.getRelative(0,-1,1),origin.getRelative(0,-1,0)));
                         int logcount = 0;
                         for (Block b : bigtree) {
                                 if(b.getType().equals(Material.LOG)||b.getType().equals(Material.LOG_2)){
                                         logcount++;
                                 }
                         }
+
+                        System.out.println("WE GOT LOGS: "+Integer.toString(logcount));
                         if(logcount >= 3){
-                                buildRoom(origin.getRelative(0,-4,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG), Arrays.asList(null,null,null,Material.LEAVES),1,0.5f,null, random);
+                                System.out.println("WE DOIN IT");;
+                                buildRoom(origin.getRelative(0,1,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG), Arrays.asList(null,null,null,Material.LEAVES),1,0.5f,null, random);
                         }
-                }else if(origin.getType().equals(Material.GRASS)){
+                }else if(origin.getType().equals(Material.GRASS)||origin.getType().equals(Material.DIRT)){
                         buildRoom(origin.getRelative(0,1,0), 5, 5, Arrays.asList(Material.WOOD_STEP),  Arrays.asList(Material.ACACIA_FENCE),  Arrays.asList(Material.WOOD),Arrays.asList(null,null,Material.AIR), -3,0f,null, random);
                 }else if(origin.getType().equals(Material.SAND) || origin.getType().equals(Material.SANDSTONE )){
                         buildRoom(origin.getRelative(0,1,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE), Arrays.asList(null,null,null,Material.SANDSTONE_STAIRS),1,0.25f,null, random);
@@ -134,6 +141,7 @@ class DungeonPopulator extends BlockPopulator{
         }
 
         public void buildRoom(Block origin,int xsize, int zsize, List<Material> roof, List<Material> wall, List<Material> floor, List<Material> crenellations, int interval,float branchChance,List<Block> origins, Random random){
+
                 xsize = (int)Math.floor((double)(xsize/2f))*2+1;
                 zsize = (int)Math.floor((double)(zsize/2f))*2+1;
                 if(origins == null){
@@ -673,11 +681,11 @@ class DungeonPopulator extends BlockPopulator{
             }
         public static void setupLauncher(Block block, int direction){
                 List<ItemStack> projectiles = new ArrayList<ItemStack>();
-                projectiles.add(new ItemStack(Material.ARROW,16));
-                projectiles.add(new ItemStack(Material.ARROW,16));
-                projectiles.add(new ItemStack(Material.ARROW,16));
-                projectiles.add(new ItemStack(Material.EGG,16));
-                projectiles.add(new ItemStack(Material.SNOW_BALL,16));
+                projectiles.add(new ItemStack(Material.ARROW,4));
+                projectiles.add(new ItemStack(Material.ARROW,4));
+                projectiles.add(new ItemStack(Material.ARROW,4));
+                projectiles.add(new ItemStack(Material.EGG,4));
+                projectiles.add(new ItemStack(Material.SNOW_BALL,4));
                 projectiles.add(new ItemStack(373, 5, (short) 16396));
                 projectiles.add(new ItemStack(373, 5, (short) 16420));
                 projectiles.add(new ItemStack(373, 5, (short) 16426));

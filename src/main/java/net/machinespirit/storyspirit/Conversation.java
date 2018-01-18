@@ -135,7 +135,7 @@ public class Conversation {
 	
 
 	public static String delivery(Villager villi,Player player){
-		if(Namer.rand.nextInt(10)<1){
+		if(Namer.rand.nextInt(25)<1){
 
 			String villagerId = (String) DataLayer.db.opinions.keySet().toArray()[StorySpirit.random.nextInt(DataLayer.db.opinions.keySet().size())];
 

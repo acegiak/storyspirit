@@ -11,14 +11,21 @@ public class Namer {
 		"belly","might","nop","geg","illy","ben","worg","fat","gun","pod","er","ly","spat","tom","son","mat","bil","jim","mik","tod","sam","dana",
 		"ali","sara","nani","cun","da","li","ni","atog","gol","hax","hod","mank","ton","bunt","ing","bree","mog","win","mad","ison","race","ris","lis",
 		"rice","lace","bang","dor","mor","hor","wise","cam","mal","com","rey","nold","fry","wash","burn","sum","mers","buf","fy","finn","lin","ton","ash",
-		"gon","bat","nil","har","tim","tin","jon","son","wil","mor","gan","red","blu","sham","forth","mold","gee","wick","stern","brad","pyre","rip","er"};
+		"gon","bat","nil","har","tim","tin","jon","son","wil","mor","gan","red","blu","sham","forth","mold","gee","wick","stern","brad","pyre","rip","er","reg",
+		"kit","nol","fres","yan","cris","fold","dal","val","inga","unga","onga","par","wil","myp","ald","heg","won","nir","ble","sni","shre","bren","hro","thre",
+		"lig","amp","nro","arg","ops","ond","reb","yal","wri","fro","mo","no","ke","dilly","mot","weg","gle","rhi","sho","nock","keg","mock","led","tri","tre","mep",
+		"tha","ma","gria","shto","ugs","unt","erd","bla","shin","dig","krunk","bag","sold","free","pod","weel","tod","ron","nick","olas","cycle","chael","ander"};
 	
 	static String[] adjectives = new String[]{"Amazing","Terrifying","Unbroken","Silent","Hungry","Chosen","Immortal","Important","Furry",
 		"Nice","Homely","Slow","Round","Sharp","Blunt","Unbowing","Fearful","Unchallenged","Glorious","Funny","Dangerous","Short","Creepy","Slimy",
 		"Wet","Dry","Big","Small","Blurry","Old","New","Quick","Unfortunate","Fortunate","Curried","Brave","Stupid","Melancholy","Frightful","Lost",
 		"Bawdy","Filthy","Evil","Bleak","Sorrowful","Devious","Unfathomable","Blighted","Terrifying","Horrifying","Horrific","Terrific","Spiteful","Lusty"};
 	static String[] titles = new String[]{"Warrior","Wizard","Hoplite","Master","King","World Destroyer","World Eater","Queen","Regent","Assassin","Bishop",
-		"Cleric","Killer","Baker","Butcher","Candlestick Maker","Peasant","Officer","Knight","Seer","Oracle","General","Tyrant","Fool","Idiot","Monster","Priest"};
+		"Cleric","Killer","Baker","Butcher","Candlestick Maker","Peasant","Officer","Knight","Seer","Oracle","General","Tyrant","Fool","Idiot","Monster","Priest",
+		"Nightmare King","Child Deciever","Critic","God","Painbringer","Daywalker"};
+
+	static String[] lessgoodadjectives = new String[]{"spare","old","trusty","extra","beloved","useful","handy","sturdy","damaged","unbreakable","heirloom","basic",
+		"fancy","tricky","fiddly","rusty","dirty","shiny","painted","prized",""};	
 	static Random rand = new Random();
 	static String random(String[] strings){
 		return (String) strings[new Random().nextInt(strings.length)];
@@ -42,7 +49,7 @@ public class Namer {
 		String ret = "";
 		int j = rand.nextInt(2)+1;
 		for(int i = 0;i<j;i++){
-			if(rand.nextBoolean()){
+			if(rand.nextFloat() > 0.3f){
 				ret += syllable();
 			}else{
 				ret+= random(syllables);

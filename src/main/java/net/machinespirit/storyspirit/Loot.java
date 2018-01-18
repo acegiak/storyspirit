@@ -149,7 +149,8 @@ class Loot{
         if(StorySpirit.random.nextFloat()<0.5 && DataLayer.db.opinions != null && DataLayer.db.opinions.size()>0){
             String villid = (String)DataLayer.db.opinions.keySet().toArray()[StorySpirit.random.nextInt(DataLayer.db.opinions.size())];
             String villiname = DataLayer.db.names.get(villid);
-            String[] loreOptions = new String[]{"Property of "+villiname, villiname+"'s lost "+s.getType().toString().replace("_", " ").toLowerCase(),"Belongs to "+villiname};
+            String[] loreOptions = new String[]{"Property of "+villiname, villiname+"'s lost "+s.getType().toString().replace("_", " ").toLowerCase(),"Belongs to "+villiname,
+            villiname+"'s "+Namer.random(Namer.lessgoodadjectives)+" "+s.getType().toString().replace("_", " ").toLowerCase()};
             lore = loreOptions[StorySpirit.random.nextInt(loreOptions.length)];
             ItemMeta meta = s.getItemMeta();
             meta.setLore(Arrays.asList(new String[]{lore}));

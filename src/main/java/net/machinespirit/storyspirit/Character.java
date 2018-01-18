@@ -7,28 +7,34 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Llama;
+import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Parrot;
 import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffectType;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +59,7 @@ static String[] toolnames = new String[]{"Weapon","Tool","Prize","Thing","Toy","
 
 
 public static void spawn(World world, Location location, String type){
-    spawn(world, location, type,StorySpirit.random.nextInt(10));
+    spawn(world, location, type,StorySpirit.random.nextInt(18));
 }
 
 public static void spawn(World world, Location location, String type, Integer points){
@@ -63,7 +69,6 @@ public static void spawn(World world, Location location, String type, Integer po
         }else if(type.equals("friend")){
             entityType = (EntityType)select(new EntityType[]{EntityType.CHICKEN,EntityType.PIG,EntityType.COW,EntityType.SHEEP,EntityType.CHICKEN,EntityType.PIG,EntityType.COW,EntityType.SHEEP,EntityType.RABBIT,EntityType.WOLF,EntityType.OCELOT,EntityType.HORSE,EntityType.VILLAGER,EntityType.MUSHROOM_COW},points);
         }else if (type.equals("foe")){
-            points = StorySpirit.random.nextInt(18);
             entityType = (EntityType)select(new EntityType[]{EntityType.ZOMBIE,EntityType.SKELETON,EntityType.ZOMBIE,EntityType.SKELETON,EntityType.PIG_ZOMBIE,EntityType.WITCH},points);
         }else{
             entityType = EntityType.fromName(type);
@@ -71,13 +76,18 @@ public static void spawn(World world, Location location, String type, Integer po
         spawn(world, location, entityType, points);
 }
 
+
 public static void spawn(World world, Location location,EntityType entityType,Integer points){
-    int startingPoints = points;
+
     LivingEntity entity = (LivingEntity)world.spawnEntity(location, entityType);
+    convert(entity, points,Namer.name());
+}
+
+public static void convert(LivingEntity entity ,Integer points, String name){
+    int startingPoints = points;
 
     Boolean questTarget = false;
 
-    String name =Namer.name();
     float modifier = 2;
 
     if(points > 16){
@@ -103,10 +113,10 @@ public static void spawn(World world, Location location,EntityType entityType,In
 
 
     ItemStack tool = null;
-    if(entityType== EntityType.SKELETON){
+    if(entity.getType().equals(EntityType.SKELETON)){
         tool = new ItemStack(Material.BOW);
     }
-    if(entityType==EntityType.ZOMBIE || entityType==EntityType.WITHER_SKULL || entityType==EntityType.PIG_ZOMBIE){
+    if(entity.getType().equals(EntityType.ZOMBIE) || entity.getType().equals(EntityType.WITHER_SKULL) || entity.getType().equals(EntityType.PIG_ZOMBIE)){
         tool = new ItemStack((Material) select(new Material[]{Material.WOOD_AXE,Material.WOOD_SWORD,Material.IRON_AXE,Material.IRON_SWORD,Material.GOLD_AXE,Material.GOLD_SWORD,Material.DIAMOND_SWORD},points));
     }
     ItemStack shirt = new ItemStack((Material) select(new Material[]{Material.LEATHER_CHESTPLATE,Material.LEATHER_CHESTPLATE,Material.GOLD_CHESTPLATE,Material.IRON_CHESTPLATE,Material.CHAINMAIL_CHESTPLATE,Material.DIAMOND_CHESTPLATE},points));
@@ -185,9 +195,24 @@ public static void spawn(World world, Location location,EntityType entityType,In
         ((LivingEntity)entity).getEquipment().setItemInHandDropChance(0.35f);
     }
 
-    if(entity instanceof Witch && StorySpirit.random.nextBoolean()){
-        entity.addScoreboardTag("nice");
+    if(entity instanceof Creeper){
+        Creeper creep = (Creeper)entity;
+        creep.setExplosionRadius((int) (creep.getExplosionRadius()*modifier));
     }
+    if(entity instanceof Slime){
+        Slime slime = (Slime)entity;
+        slime.setSize((int) (slime.getSize()*modifier*0.5));
+    }
+    if(entity instanceof MagmaCube){
+        MagmaCube magmaCube = (MagmaCube)entity;
+        magmaCube.setSize((int) (magmaCube.getSize()*modifier*0.5));
+    }
+    if(entity instanceof Witch){
+        if(StorySpirit.random.nextBoolean()){
+        entity.addScoreboardTag("nice");
+        }
+    }
+
 
     if(entity instanceof Pig || entity instanceof Cow || entity instanceof Sheep || entity instanceof Llama || entity instanceof Rabbit || entity instanceof Horse || entity instanceof Squid || entity instanceof Chicken || entity instanceof Bat || entity instanceof Wolf || entity instanceof Ocelot || entity instanceof Parrot){
         ArrayList<PotionEffectType> types = new ArrayList<PotionEffectType>(Arrays.asList(PotionEffectType.DAMAGE_RESISTANCE,PotionEffectType.FAST_DIGGING,PotionEffectType.HEAL,PotionEffectType.FIRE_RESISTANCE,PotionEffectType.GLOWING,PotionEffectType.HEALTH_BOOST,PotionEffectType.INVISIBILITY,PotionEffectType.JUMP,PotionEffectType.LEVITATION,PotionEffectType.INCREASE_DAMAGE,PotionEffectType.REGENERATION,PotionEffectType.NIGHT_VISION,PotionEffectType.LUCK,PotionEffectType.SPEED,PotionEffectType.WATER_BREATHING, PotionEffectType.BLINDNESS,PotionEffectType.SLOW,PotionEffectType.CONFUSION));

@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -40,28 +45,27 @@ public class StorySpirit extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new StoryListener(), this);
 
-        //VILLAGE INFO
-
-        // get config
-		// this.saveDefaultConfig();
-		// usePermissions = getConfig().getBoolean("usePermissions");
-		// lang = getConfig().getConfigurationSection("msg").getValues(false);
-		// getLogger().info("Using permissions: "+usePermissions);		
-		
-		// create a map of WorldServers by its name, for later quick search
-	    try
-		{
-			Object minecraftServer = Class.forName("net.minecraft.server."+version+".MinecraftServer").getMethod("getServer").invoke(null);
-			for (Object worldServer : (List<Object>) minecraftServer.getClass().getField("worlds").get(minecraftServer))
-			{
-				Object craftWorld = worldServer.getClass().getSuperclass().getMethod("getWorld").invoke(worldServer);
-				this.worlds.put((String) craftWorld.getClass().getMethod("getName").invoke(craftWorld), worldServer);
-			}
-		}
-		catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e){e.printStackTrace();}
-
         random = new Random();
-        String worldName = getServer().getName();
+        String worldName = "world";
+        File f = new File(getServer().getWorldContainer().toString()+"/server.properties");
+        BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(f));
+		
+            String line = null;  
+            
+            while ((line = br.readLine()) != null)  
+            {  
+                String[] broken = line.split("=");
+                if(broken[0].equals("level-name")){
+                    worldName=broken[1];
+                }
+            }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        System.out.println("WORLDNAME IS: "+worldName);
         DataLayer.onLoad(getDataFolder(),worldName);
 
 
