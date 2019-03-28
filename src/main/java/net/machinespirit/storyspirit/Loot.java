@@ -17,6 +17,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 class Loot{
 
@@ -104,6 +107,9 @@ class Loot{
         if(StorySpirit.random.nextFloat()<0.15f){
             return randomNamed(location);
         }
+        if(StorySpirit.random.nextFloat()<0.20f){
+            return randomPotion(location);
+        }
 
         int count =0;
 		for(ItemStack i : loot.keySet()){
@@ -173,6 +179,19 @@ class Loot{
         }
 
         return null;
+    }
+
+    public static ItemStack randomPotion(Location location){
+        ArrayList<Material> m = new ArrayList<Material>(Arrays.asList(Material.POTION,Material.SPLASH_POTION,Material.LINGERING_POTION));
+        ItemStack potion = new ItemStack(m.get(StorySpirit.random.nextInt(m.size())));
+        PotionMeta meta = (PotionMeta) potion.getItemMeta();
+        PotionEffectType type = PotionEffectType.values()[StorySpirit.random.nextInt(PotionEffectType.values().length)];
+        meta.addCustomEffect(new PotionEffect(type,StorySpirit.random.nextInt(5*60)*20, StorySpirit.random.nextInt(3)+1), true);
+        meta.setColor(Color.fromBGR(StorySpirit.random.nextInt(256), StorySpirit.random.nextInt(256), StorySpirit.random.nextInt(256)));
+
+        meta.setDisplayName(StorySpirit.toTitleCase(potion.getType().toString()+" of "+type.getName()));
+        potion.setItemMeta(meta);
+        return potion;
     }
     
     static void itemTweak(ItemStack item,String name,String lore,int[] color){

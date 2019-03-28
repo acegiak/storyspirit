@@ -1,6 +1,5 @@
 package net.machinespirit.storyspirit;
 
-
 import java.awt.SystemTray;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +9,7 @@ import java.util.Random;
 import javax.swing.text.html.parser.Entity;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -54,8 +54,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import com.google.common.reflect.ClassPath.ResourceInfo;
 
@@ -109,7 +112,9 @@ public class StoryListener implements Listener
             Merchant m = Bukkit.createMerchant(event.getRightClicked().getCustomName());
 
             Material[] ingredients = new Material[]{Material.SPIDER_EYE,Material.LILY_PAD,Material.POISONOUS_POTATO,Material.SLIME_BALL,Material.APPLE,Material.VINE,Material.RED_MUSHROOM,Material.BONE,Material.ENDER_PEARL,Material.FERMENTED_SPIDER_EYE,Material.BROWN_MUSHROOM,Material.ROTTEN_FLESH,Material.MUTTON,Material.BEETROOT,Material.PORKCHOP,Material.BEEF,Material.FLINT,Material.BLAZE_ROD,Material.CLAY_BALL,Material.COAL,Material.WHEAT_SEEDS,Material.WHEAT,Material.POTATO,Material.LEGACY_RAW_FISH,Material.SNOWBALL,Material.REDSTONE,Material.STICK,Material.FLINT,Material.WHEAT,Material.PAPER,Material.STRING,Material.SUGAR_CANE,Material.SUGAR,Material.QUARTZ,Material.LEATHER,Material.LAVA_BUCKET,Material.BREAD,Material.MILK_BUCKET,Material.GOLD_NUGGET,Material.GHAST_TEAR,Material.EGG,Material.WHITE_WOOL,Material.RABBIT_FOOT,Material.FEATHER,Material.RABBIT_HIDE,Material.FLOWER_POT};
-            Material[] offered = new Material[]{Material.LEATHER_LEGGINGS,Material.LEATHER_BOOTS,Material.APPLE,Material.BEETROOT_SOUP,Material.EMERALD,Material.PAINTING,Material.CAULDRON,Material.ENDER_EYE,Material.GOLDEN_APPLE,Material.GOLDEN_CARROT,Material.BUCKET,Material.FLOWER_POT,Material.OAK_BOAT,Material.WRITABLE_BOOK,Material.BOOKSHELF,Material.COOKIE,Material.CAKE,Material.BEETROOT_SOUP,Material.CARROT_ON_A_STICK,Material.FIREWORK_ROCKET,Material.JUKEBOX,Material.MAP,Material.LEAD,Material.GLOWSTONE,Material.MOSSY_COBBLESTONE,Material.PUMPKIN_PIE,Material.RABBIT_STEW,Material.SEA_LANTERN,Material.SHIELD,Material.WHITE_BANNER,Material.TOTEM_OF_UNDYING};
+            Material[] offered = new Material[]{Material.LEATHER_LEGGINGS,Material.LEATHER_BOOTS,Material.APPLE,Material.BEETROOT_SOUP,Material.EMERALD,Material.PAINTING,Material.CAULDRON,Material.ENDER_EYE,Material.GOLDEN_APPLE,Material.GOLDEN_CARROT,Material.BUCKET,Material.FLOWER_POT,Material.OAK_BOAT,Material.WRITABLE_BOOK,Material.BOOKSHELF,Material.COOKIE,Material.CAKE,Material.BEETROOT_SOUP,Material.CARROT_ON_A_STICK,Material.FIREWORK_ROCKET,Material.JUKEBOX,Material.MAP,Material.LEAD,Material.GLOWSTONE,Material.MOSSY_COBBLESTONE,Material.PUMPKIN_PIE,Material.RABBIT_STEW,Material.SEA_LANTERN,Material.SHIELD,Material.WHITE_BANNER,Material.TOTEM_OF_UNDYING,Material.NAUTILUS_SHELL};
+
+            
             List<MerchantRecipe> recipes = new ArrayList<MerchantRecipe>();
 
             if(DataLayer.witchInventories.containsKey(event.getRightClicked().getUniqueId())){
@@ -135,7 +140,14 @@ public class StoryListener implements Listener
                         r2 +=3;
                     }
                     if(choicespace<0.8f){
-                        item = new ItemStack(Material.LEGACY_POTION, StorySpirit.random.nextInt(reward), (short) (8193+StorySpirit.random.nextInt(13)));
+                        item = new ItemStack(Material.POTION);
+                        PotionMeta meta = (PotionMeta) item.getItemMeta();
+                        meta.setColor(Color.fromBGR(StorySpirit.random.nextInt(255), StorySpirit.random.nextInt(255), StorySpirit.random.nextInt(255)));
+                        PotionEffectType type = PotionEffectType.values()[StorySpirit.random.nextInt(PotionEffectType.values().length)];
+                        meta.addCustomEffect(new PotionEffect(type, StorySpirit.random.nextInt(60*5)*20, StorySpirit.random.nextInt(3)+1), true);
+                        meta.setDisplayName(StorySpirit.toTitleCase(item.getType().toString()+" of "+type.getName()));
+
+                        item.setItemMeta(meta);
                     }else if(choicespace<0.95f){
                         item = new ItemStack(offered[StorySpirit.random.nextInt(offered.length)], reward);
                     }else{

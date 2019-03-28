@@ -75,6 +75,9 @@ class DungeonPopulator extends BlockPopulator{
 
 
 
+
+
+
         public static ArrayList<Material> air = new ArrayList<Material>(Arrays.asList(
                 Material.AIR,
                 Material.ACACIA_LEAVES,
@@ -96,6 +99,22 @@ class DungeonPopulator extends BlockPopulator{
                         Material.TRIPWIRE,
                         Material.TRIPWIRE_HOOK
         ));
+
+        public static ArrayList<PotionEffectType> debuffs = new ArrayList<PotionEffectType>(Arrays.asList(
+                PotionEffectType.LEVITATION,
+                PotionEffectType.BLINDNESS,
+                PotionEffectType.CONFUSION,
+                PotionEffectType.POISON,
+                PotionEffectType.HARM,
+                PotionEffectType.SLOW,
+                PotionEffectType.WEAKNESS,
+                PotionEffectType.WITHER,
+                PotionEffectType.UNLUCK,
+                PotionEffectType.SLOW_DIGGING
+        ));
+
+
+
         public static float treasureRate = 0.005f;
         public static float trapRate = 0.015f;
         public static float spawnerRate = 0.10f;
@@ -767,17 +786,14 @@ class DungeonPopulator extends BlockPopulator{
                 projectiles.add(new ItemStack(Material.ARROW,4));
                 projectiles.add(new ItemStack(Material.EGG,4));
                 projectiles.add(new ItemStack(Material.SNOWBALL,4));
-                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16396));
-                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16420));
-                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16426));
-                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16424));
 
-                ItemStack potion = new ItemStack(Material.LEGACY_SPLASH_POTION, 10);
+
+
+                ItemStack potion = new ItemStack(Material.SPLASH_POTION, 10);
                 PotionMeta potionmeta = (PotionMeta) potion.getItemMeta();
-                potionmeta.setMainEffect(PotionEffectType.LEVITATION);
-                PotionEffect speed = new PotionEffect(PotionEffectType.LEVITATION, 1000, 1);
-                potionmeta.addCustomEffect(speed, true);
-                potionmeta.setDisplayName("Splash Potion Of Levitation");
+                PotionEffectType debuff = debuffs.get(StorySpirit.random.nextInt(debuffs.size()));      
+                potionmeta.addCustomEffect(new PotionEffect(debuff,StorySpirit.random.nextInt(5*60)*20,StorySpirit.random.nextInt(3)+1),true);
+                potionmeta.setDisplayName(StorySpirit.toTitleCase("Splash Potion Of "+debuff.getName()));
                 potion.setItemMeta(potionmeta);
                 projectiles.add(potion);
                 

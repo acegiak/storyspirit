@@ -89,7 +89,7 @@ public class DataLayer {
         if(!db.blessings.containsKey(entity.getUniqueId().toString())){
             return null;
         }
-
+        
         return PotionEffectType.getById(db.blessings.get(entity.getUniqueId().toString()));
     }
 

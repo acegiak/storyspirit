@@ -28,6 +28,14 @@ public class StorySpirit extends JavaPlugin {
 	public Map<String, Object> lang;
     public String version = getServer().getClass().getName().split("\\.")[3];
 
+    public static String toTitleCase (String s){
+        s = s.replace('_', ' ');
+        String[] ss = s.split(" ");
+        for(int i = 0;i<ss.length;i++){
+            ss[i] = ss[i].substring(0, 1).toUpperCase()+ss[i].substring(1).toLowerCase();
+        }
+        return String.join(" ", ss);
+    }
 
     @Override
     public void onDisable() {

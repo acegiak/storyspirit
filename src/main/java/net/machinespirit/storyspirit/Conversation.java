@@ -50,22 +50,22 @@ public class Conversation {
         for(Object r : villi.getRecipes()){
 			MerchantRecipe recipe = (MerchantRecipe)r;
 			if(!recipe.getResult().getType().equals(Material.EMERALD)){
-				choices.add("You wan buy "+recipe.getResult().getType().toString().replace('_', ' ')+"?");
-				choices.add("Do you need "+recipe.getResult().getType().toString().replace('_', ' ')+"?");
-				choices.add("I have plenty of "+recipe.getResult().getType().toString().replace('_', ' ')+"!");
+				choices.add("You wan buy "+StorySpirit.toTitleCase(recipe.getResult().getType().toString())+"?");
+				choices.add("Do you need "+StorySpirit.toTitleCase(recipe.getResult().getType().toString())+"?");
+				choices.add("I have plenty of "+StorySpirit.toTitleCase(recipe.getResult().getType().toString())+"!");
 				if(recipe.getIngredients().get(0).getType().equals(Material.EMERALD)){
-					points.add(new ConversationPoint("Here, Friend! Take some "+recipe.getResult().getType().toString(),20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
-					points.add(new ConversationPoint(p.getName()+"! Here, have this "+recipe.getResult().getType().toString()+"! For you!",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
-					points.add(new ConversationPoint("Oh, also, I got you this "+recipe.getResult().getType().toString()+". Take it.",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
-					points.add(new ConversationPoint("You look like you need "+recipe.getResult().getType().toString()+". Take it.",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
-					points.add(new ConversationPoint("You need "+recipe.getResult().getType().toString()+" more than me.",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
+					points.add(new ConversationPoint("Here, Friend! Take some "+StorySpirit.toTitleCase(recipe.getResult().getType().toString()),20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
+					points.add(new ConversationPoint(p.getName()+"! Here, have this "+StorySpirit.toTitleCase(recipe.getResult().getType().toString())+"! For you!",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
+					points.add(new ConversationPoint("Oh, also, I got you this "+StorySpirit.toTitleCase(recipe.getResult().getType().toString())+". Take it.",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
+					points.add(new ConversationPoint("You look like you need "+StorySpirit.toTitleCase(recipe.getResult().getType().toString())+". Take it.",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
+					points.add(new ConversationPoint("You need "+StorySpirit.toTitleCase(recipe.getResult().getType().toString())+" more than me.",20f,Math.max(1f,(float)recipe.getIngredients().get(0).getAmount()),Math.max(1f,(float)recipe.getIngredients().get(0).getAmount())*-0.5f,recipe.getResult()));
 				}
 				
 			}
 			if(!recipe.getIngredients().get(0).getType().equals(Material.EMERALD)){
-				choices.add("You got any "+recipe.getIngredients().get(0).getType().toString().replace('_', ' ')+"?");
-				choices.add("I need some "+recipe.getIngredients().get(0).getType().toString().replace('_', ' ')+".");
-				choices.add("If you see any "+recipe.getIngredients().get(0).getType().toString().replace('_', ' ')+" let me know.");
+				choices.add("You got any "+StorySpirit.toTitleCase(recipe.getIngredients().get(0).getType().toString())+"?");
+				choices.add("I need some "+StorySpirit.toTitleCase(recipe.getIngredients().get(0).getType().toString())+".");
+				choices.add("If you see any "+StorySpirit.toTitleCase(recipe.getIngredients().get(0).getType().toString())+" let me know.");
 			}
 		}
 		for(int i = 0; i<12;i++){
