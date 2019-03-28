@@ -1,14 +1,13 @@
 ## Summary
 
-A plugin for spigot Minecraft servers. Just bung it in the plugins folder
+A plugin for spigot Minecraft servers. Put it in the plugins folder
 
-This just adds all of the nonsense Ashton wants to add to the game like freakin npcs and stuff. I dunno.
+StorySpirit adds a variety of story and roleplaying elements to Minecraft to make a more narrative experience.
 
-## Current Features:
-Generates named minibosses. Use /spawn and /spawn friend and /spawn foe to summon named mobs at your location.
-Currently replaces 1 in 250 mobs with a named miniboss.
-
-## Planned Features:
-* Quests
-* Quest Dungeons
-* Villager Town Faction reputations
+## Features
+ * Named minibosses
+ * New custom dungeon structures
+ * Shift-click to talk to villagers
+ * Some witches are friendly and will trade
+ * Quests
+ * Shift-Click to interact with named friendly mobs
