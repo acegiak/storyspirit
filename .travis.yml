@@ -8,8 +8,8 @@ before_deploy:
   - git config --local user.email "acegiak@gmail.com"
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - git tag $TRAVIS_TAG
-    deploy:
-      provider: releases
-      api_key: "f7a318c5ee2f4e5127cdf90b65f9c12511924799"
-      file: "target/StorySpirit-1.1.jar"
-      skip_cleanup: true
+deploy:
+  provider: releases
+  api_key: "$githubOauth"
+  file: "target/StorySpirit-1.1.jar"
+  skip_cleanup: true
