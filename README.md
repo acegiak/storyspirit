@@ -1,4 +1,5 @@
 ## Summary
+Currently built for Spigot 1.13.2
 
 A plugin for spigot Minecraft servers. Put it in the plugins folder
 
