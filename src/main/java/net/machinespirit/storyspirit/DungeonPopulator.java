@@ -2,6 +2,7 @@ package net.machinespirit.storyspirit;
 
 import org.bukkit.Chunk;
 import org.bukkit.DyeColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -29,6 +30,8 @@ import org.omg.IOP.ENCODING_CDR_ENCAPS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
@@ -44,35 +47,69 @@ class DungeonPopulator extends BlockPopulator{
                 Material.DIRT,
                 Material.SAND,
                 Material.SANDSTONE,
-                Material.LOG,
-                Material.LOG_2
+                Material.ACACIA_LOG,
+                Material.BIRCH_LOG,
+                Material.DARK_OAK_LOG,
+                Material.JUNGLE_LOG,
+                Material.OAK_LOG,
+                Material.SPRUCE_LOG
         ));
+
+        public static ArrayList<Material> logs = new ArrayList<Material>(Arrays.asList(
+                Material.ACACIA_LOG,
+                Material.BIRCH_LOG,
+                Material.DARK_OAK_LOG,
+                Material.JUNGLE_LOG,
+                Material.OAK_LOG,
+                Material.SPRUCE_LOG
+        ));
+        
+        public static Hashtable<Material,Material> leafType = new Hashtable<Material,Material>(){{
+                put(Material.OAK_LOG,Material.OAK_LEAVES);
+                put(Material.BIRCH_LOG,Material.BIRCH_LEAVES);
+                put(Material.DARK_OAK_LOG,Material.DARK_OAK_LEAVES);
+                put(Material.JUNGLE_LOG,Material.JUNGLE_LEAVES);
+                put(Material.ACACIA_LOG,Material.ACACIA_LEAVES);
+                put(Material.SPRUCE_LOG,Material.SPRUCE_LEAVES);
+        }};
+
+
 
         public static ArrayList<Material> air = new ArrayList<Material>(Arrays.asList(
                 Material.AIR,
-                Material.LEAVES,
+                Material.ACACIA_LEAVES,
+                Material.BIRCH_LEAVES,
+                Material.DARK_OAK_LEAVES,
+                Material.JUNGLE_LEAVES,
+                Material.OAK_LEAVES,
+                Material.SPRUCE_LEAVES,
                 Material.SNOW,
                 Material.GRASS,
-                Material.LEAVES_2,
                 Material.VINE
         ));
 
+
+        
         public static ArrayList<Material> dontTouch = new ArrayList<Material>(Arrays.asList(
                         Material.CHEST,
                         Material.DISPENSER,
                         Material.TRIPWIRE,
                         Material.TRIPWIRE_HOOK
         ));
-        public static float treasureRate = 0.025f;
-        public static float trapRate = 0.05f;
+        public static float treasureRate = 0.005f;
+        public static float trapRate = 0.015f;
         public static float spawnerRate = 0.10f;
         public static float decoRate = 0.05f;
+        public static float fillrate = 0.95f;
         
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
-                if(random.nextFloat()>1f/200f){
-                        return;
+                if(random.nextFloat()>1f/175){
+                //        System.out.println("CHUNK DONT");
+                         return;
                 }
+
+                //System.out.println("CHUNK DO");
                 Block origin = null;
                 
                 int ox = random.nextInt(15);
@@ -88,6 +125,12 @@ class DungeonPopulator extends BlockPopulator{
                                         && air.contains(test.getRelative(0,1,0).getType())
                                         && air.contains(test.getRelative(0,2,0).getType())){
                                                 possibleOrigins.add(test);
+                                                if(logs.contains(test.getType())){
+                                                        possibleOrigins.add(test);
+                                                        possibleOrigins.add(test);
+                                                        possibleOrigins.add(test);
+                                                        possibleOrigins.add(test);
+                                                }
                                         }
                                 }
                         }
@@ -107,20 +150,20 @@ class DungeonPopulator extends BlockPopulator{
                 origin.getRelative(1,0,-1).getType().equals(Material.GRASS) && air.contains(origin.getRelative(1,1,-1).getType()) &&
                 origin.getRelative(-1,0,-1).getType().equals(Material.GRASS) && air.contains(origin.getRelative(-1,1,-1).getType())                    
                 ){
-                        origin.setType(Material.getMaterial(208));
-                        origin.getRelative(1,0,1).setType(Material.getMaterial(208));
-                        origin.getRelative(-1,0,-1).setType(Material.getMaterial(208));
-                        origin.getRelative(1,0,-1).setType(Material.getMaterial(208));
-                        origin.getRelative(-1,0,1).setType(Material.getMaterial(208));
+                        origin.setType(Material.GRASS_PATH);
+                        origin.getRelative(1,0,1).setType(Material.GRASS_PATH);
+                        origin.getRelative(-1,0,-1).setType(Material.GRASS_PATH);
+                        origin.getRelative(1,0,-1).setType(Material.GRASS_PATH);
+                        origin.getRelative(-1,0,1).setType(Material.GRASS_PATH);
                         origin.getRelative(0,-1,0).setType(Material.CHEST);
                         fillchest(origin.getRelative(0,-1,0));
-                }else if(origin.getType().equals(Material.LOG) || origin.getType().equals(Material.LOG_2) ){
+                }else if(logs.contains(origin.getType())){
                         System.out.println("GONNA TRY MAKE A TREEHOUSE, MA");
                         ArrayList<Block> bigtree = new ArrayList<Block>(Arrays.asList(origin.getRelative(1,0,0),origin.getRelative(1,0,1),origin.getRelative(-1,0,0),origin.getRelative(-1,0,1),origin.getRelative(-1,0,-1),origin.getRelative(0,0,-1),origin.getRelative(-1,0,0),origin.getRelative(0,0,1),
                         origin.getRelative(1,-1,0),origin.getRelative(1,-1,1),origin.getRelative(-1,-1,0),origin.getRelative(-1,-1,1),origin.getRelative(-1,-1,-1),origin.getRelative(0,-1,-1),origin.getRelative(-1,-1,0),origin.getRelative(0,-1,1),origin.getRelative(0,-1,0)));
                         int logcount = 0;
                         for (Block b : bigtree) {
-                                if(b.getType().equals(Material.LOG)||b.getType().equals(Material.LOG_2)){
+                                if(logs.contains(b.getType())){
                                         logcount++;
                                 }
                         }
@@ -128,20 +171,20 @@ class DungeonPopulator extends BlockPopulator{
                         System.out.println("WE GOT LOGS: "+Integer.toString(logcount));
                         if(logcount >= 3){
                                 System.out.println("WE DOIN IT");;
-                                buildRoom(origin.getRelative(0,1,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG),  Arrays.asList(Material.LOG), Arrays.asList(null,null,null,Material.LEAVES),1,0.5f,null, random);
+                                buildRoom(origin.getRelative(0,1,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(origin.getType()),  Arrays.asList(origin.getType()),  Arrays.asList(origin.getType()), Arrays.asList(null,null,null,leafType.get(origin.getType())),1,0.5f,null, random);
                         }
                 }else if(origin.getType().equals(Material.GRASS)||origin.getType().equals(Material.DIRT)){
-                        buildRoom(origin.getRelative(0,1,0), 5, 5, Arrays.asList(Material.WOOD_STEP),  Arrays.asList(Material.ACACIA_FENCE),  Arrays.asList(Material.WOOD),Arrays.asList(null,null,Material.AIR), -3,0f,null, random);
+                        buildRoom(origin.getRelative(0,1,0), 5+StorySpirit.random.nextInt(2), 5+StorySpirit.random.nextInt(2), Arrays.asList(Material.ACACIA_SLAB),  Arrays.asList(Material.ACACIA_FENCE),  Arrays.asList(Material.ACACIA_PLANKS),Arrays.asList(null,null,Material.AIR), -3,0.25f,null, random);
                 }else if(origin.getType().equals(Material.SAND) || origin.getType().equals(Material.SANDSTONE )){
                         buildRoom(origin.getRelative(0,1,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE), Arrays.asList(null,null,null,Material.SANDSTONE_STAIRS),1,0.25f,null, random);
                 }else{
-                        buildRoom(origin.getRelative(0,2,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK),  Arrays.asList(Material.SMOOTH_BRICK), Arrays.asList(null,null,null,Material.IRON_FENCE), 1,1f,null, random);
+                        buildRoom(origin.getRelative(0,2,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.STONE_BRICKS),  Arrays.asList(Material.STONE_BRICKS),  Arrays.asList(Material.STONE_BRICKS), Arrays.asList(null,null,null,Material.IRON_BARS), 1,1f,null, random);
                 }
 
         }
 
         public void buildRoom(Block origin,int xsize, int zsize, List<Material> roof, List<Material> wall, List<Material> floor, List<Material> crenellations, int interval,float branchChance,List<Block> origins, Random random){
-
+                float filler = 1;
                 xsize = (int)Math.floor((double)(xsize/2f))*2+1;
                 zsize = (int)Math.floor((double)(zsize/2f))*2+1;
                 if(origins == null){
@@ -187,12 +230,12 @@ class DungeonPopulator extends BlockPopulator{
                         //add doors?
                         if(random.nextFloat()<0.5f){
                                 if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(xmin,1,0), Material.IRON_DOOR_BLOCK, 8, true, true);
-                                        setBlockType(origin.getRelative(xmin,0,0), Material.IRON_DOOR_BLOCK, 2, true, true);
+                                        setBlockType(origin.getRelative(xmin,1,0), Material.IRON_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(xmin,0,0), Material.IRON_DOOR, 2, true, true);
                                         setBlockType(origin.getRelative(xmin-1,1,1), Material.STONE_BUTTON, 2, true, true);
                                 }else if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(xmin,1,0), Material.WOODEN_DOOR, 8, true, true);
-                                        setBlockType(origin.getRelative(xmin,0,0), Material.WOODEN_DOOR, 2, true, true);
+                                        setBlockType(origin.getRelative(xmin,1,0), Material.OAK_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(xmin,0,0), Material.OAK_DOOR, 2, true, true);
                                 }else{
                                         origin.getRelative(xmin,1,0).setType(Material.AIR);
                                         origin.getRelative(xmin,0,0).setType(Material.AIR);
@@ -200,12 +243,12 @@ class DungeonPopulator extends BlockPopulator{
                         }
                         if(random.nextFloat()<0.5f){
                                 if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(xmax,1,0), Material.IRON_DOOR_BLOCK, 8, true, true);
-                                        setBlockType(origin.getRelative(xmax,0,0), Material.IRON_DOOR_BLOCK, 2, true, true);
+                                        setBlockType(origin.getRelative(xmax,1,0), Material.IRON_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(xmax,0,0), Material.IRON_DOOR, 2, true, true);
                                         setBlockType(origin.getRelative(xmax+1,1,1), Material.STONE_BUTTON, 1, true, true);
                                 }else if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(xmax,1,0), Material.WOODEN_DOOR, 8, true, true);
-                                        setBlockType(origin.getRelative(xmax,0,0), Material.WOODEN_DOOR, 2, true, true);
+                                        setBlockType(origin.getRelative(xmax,1,0), Material.OAK_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(xmax,0,0), Material.OAK_DOOR, 2, true, true);
                                 }else{
                                         origin.getRelative(xmax,1,0).setType(Material.AIR);
                                         origin.getRelative(xmax,0,0).setType(Material.AIR);
@@ -213,13 +256,13 @@ class DungeonPopulator extends BlockPopulator{
                         }
                         if(random.nextFloat()<0.5f){
                                 if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(0,1,zmin), Material.IRON_DOOR_BLOCK, 8, true, true);
-                                        setBlockType(origin.getRelative(0,0,zmin), Material.IRON_DOOR_BLOCK, 1, true, true);
+                                        setBlockType(origin.getRelative(0,1,zmin), Material.IRON_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmin), Material.IRON_DOOR, 1, true, true);
                                         setBlockType(origin.getRelative(1,1,zmin-1), Material.STONE_BUTTON, 4, true, true);
 
                                 }else if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(0,1,zmin), Material.WOODEN_DOOR, 8, true, true);
-                                        setBlockType(origin.getRelative(0,0,zmin), Material.WOODEN_DOOR, 3, true, true);
+                                        setBlockType(origin.getRelative(0,1,zmin), Material.OAK_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmin), Material.OAK_DOOR, 3, true, true);
                                 }else{
                                         origin.getRelative(0,1,zmin).setType(Material.AIR);
                                         origin.getRelative(0,0,zmin).setType(Material.AIR);
@@ -227,12 +270,12 @@ class DungeonPopulator extends BlockPopulator{
                         }
                         if(random.nextFloat()<0.5f){
                                 if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(0,1,zmax), Material.IRON_DOOR_BLOCK, 8, true, true);
-                                        setBlockType(origin.getRelative(0,0,zmax), Material.IRON_DOOR_BLOCK, 1, true, true);
+                                        setBlockType(origin.getRelative(0,1,zmax), Material.IRON_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmax), Material.IRON_DOOR, 1, true, true);
                                         setBlockType(origin.getRelative(1,1,zmax+1), Material.STONE_BUTTON, 3, true, true);
                                 }else if(random.nextFloat()<0.25f){
-                                        setBlockType(origin.getRelative(0,1,zmax), Material.WOODEN_DOOR, 8, true, true);
-                                        setBlockType(origin.getRelative(0,0,zmax), Material.WOODEN_DOOR, 4, true, true);
+                                        setBlockType(origin.getRelative(0,1,zmax), Material.OAK_DOOR, 8, true, true);
+                                        setBlockType(origin.getRelative(0,0,zmax), Material.OAK_DOOR, 4, true, true);
                                 }else{
                                         origin.getRelative(0,1,zmax).setType(Material.AIR);
                                         origin.getRelative(0,0,zmax).setType(Material.AIR);
@@ -245,8 +288,9 @@ class DungeonPopulator extends BlockPopulator{
                 boolean stairs = true;
                 boolean spiders = true;
 
-                if(random.nextFloat()<spawnerRate && interval <2 && interval >-2){
-                        origin.setType(Material.MOB_SPAWNER);
+                if(random.nextFloat()*filler<spawnerRate && interval <2 && interval >-2){
+                        filler = 1f;
+                        origin.setType(Material.SPAWNER);
                         traps = false;
                         light = false;
                         stairs = false;
@@ -265,28 +309,30 @@ class DungeonPopulator extends BlockPopulator{
                                 origin.setType(Material.AIR);
                         }
                         
-                }else if(random.nextFloat()<spawnerRate ){
+                }else if(random.nextFloat()*filler<spawnerRate ){
                         Character.spawn(origin.getWorld(), origin.getRelative(0,1,0).getLocation(), "foe", random.nextInt(20));
                         traps = false;
-                }else if(random.nextFloat()<spawnerRate*0.5f ){
+                }else if(random.nextFloat()*filler<spawnerRate*0.5f ){
                         Character.spawn(origin.getWorld(), origin.getRelative(0,1,0).getLocation(), "friend", random.nextInt(20));
                         traps = false;
-                        origin.getRelative(1,1,0).setType(Material.IRON_FENCE);
-                        origin.getRelative(1,1,1).setType(Material.IRON_FENCE);
-                        origin.getRelative(1,1,-1).setType(Material.IRON_FENCE);
-                        origin.getRelative(-1,1,0).setType(Material.IRON_FENCE);
-                        origin.getRelative(-1,1,1).setType(Material.IRON_FENCE);
-                        origin.getRelative(-1,1,-1).setType(Material.IRON_FENCE);
-                        origin.getRelative(0,1,1).setType(Material.IRON_FENCE);
-                        origin.getRelative(0,1,-1).setType(Material.IRON_FENCE);
-                        origin.getRelative(1,0,0).setType(Material.IRON_FENCE);
-                        origin.getRelative(1,0,1).setType(Material.IRON_FENCE);
-                        origin.getRelative(1,0,-1).setType(Material.IRON_FENCE);
-                        origin.getRelative(-1,0,0).setType(Material.IRON_FENCE);
-                        origin.getRelative(-1,0,1).setType(Material.IRON_FENCE);
-                        origin.getRelative(-1,0,-1).setType(Material.IRON_FENCE);
-                        origin.getRelative(0,0,1).setType(Material.IRON_FENCE);
-                        origin.getRelative(0,0,-1).setType(Material.IRON_FENCE);
+                        origin.getRelative(1,1,0).setType(Material.IRON_BARS);
+                        origin.getRelative(1,1,1).setType(Material.IRON_BARS);
+                        origin.getRelative(1,1,-1).setType(Material.IRON_BARS);
+                        origin.getRelative(-1,1,0).setType(Material.IRON_BARS);
+                        origin.getRelative(-1,1,1).setType(Material.IRON_BARS);
+                        origin.getRelative(-1,1,-1).setType(Material.IRON_BARS);
+                        origin.getRelative(0,1,1).setType(Material.IRON_BARS);
+                        origin.getRelative(0,1,-1).setType(Material.IRON_BARS);
+                        origin.getRelative(1,0,0).setType(Material.IRON_BARS);
+                        origin.getRelative(1,0,1).setType(Material.IRON_BARS);
+                        origin.getRelative(1,0,-1).setType(Material.IRON_BARS);
+                        origin.getRelative(-1,0,0).setType(Material.IRON_BARS);
+                        origin.getRelative(-1,0,1).setType(Material.IRON_BARS);
+                        origin.getRelative(-1,0,-1).setType(Material.IRON_BARS);
+                        origin.getRelative(0,0,1).setType(Material.IRON_BARS);
+                        origin.getRelative(0,0,-1).setType(Material.IRON_BARS);
+                }else{
+                        filler = filler*fillrate;
                 }
 
                 
@@ -295,8 +341,6 @@ class DungeonPopulator extends BlockPopulator{
 
                 for (Block ablock : allBlocks) {
 
-
-                        
                         if(traps){
 
                                 //START TRIPWIRES
@@ -310,8 +354,8 @@ class DungeonPopulator extends BlockPopulator{
                                         ew = false;
                                         trip = true;
                                 }
-                                if(random.nextFloat()<trapRate && trip){
-                                        
+                                if(random.nextFloat()*filler<trapRate && trip){
+                                        filler = 1f;
                                         List<Block> bblocks = new ArrayList<Block>();
                                         List<Block> seenblocks = new ArrayList<Block>();
                                         bblocks.add(ablock);
@@ -381,25 +425,31 @@ class DungeonPopulator extends BlockPopulator{
                                                         state.update(true,true);
                                                 }
                                         }
+                                }else{
+                                        filler = filler*fillrate;
                                 }
 
 
                                 //START PRESSURE PLATE TNT
-                                if(!ablock.getRelative(0,-2,0).getType().equals(Material.AIR)&&random.nextFloat()<trapRate){
-                                        if(ablock.getType().equals(Material.SMOOTH_BRICK) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
-                                                ablock.getRelative(0,1,0).setType(Material.STONE_PLATE);
+                                if(!ablock.getRelative(0,-2,0).getType().equals(Material.AIR)&&random.nextFloat()*filler<trapRate){
+                                        filler = 1;
+                                        if(ablock.getType().equals(Material.STONE_BRICKS) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                                ablock.getRelative(0,1,0).setType(Material.STONE_PRESSURE_PLATE);
                                                 ablock.getRelative(0,-1,0).setType(Material.TNT);
-                                        }else if(ablock.getType().equals(Material.WOOD) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
-                                                ablock.getRelative(0,1,0).setType(Material.WOOD_PLATE);
+                                        }else if(ablock.getType().equals(Material.ACACIA_PLANKS) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                                ablock.getRelative(0,1,0).setType(Material.ACACIA_PRESSURE_PLATE);
                                                 ablock.getRelative(0,-1,0).setType(Material.TNT);
                                         }else if(ablock.getType().equals(Material.SANDSTONE) && ablock.getRelative(0,1,0).getType().equals(Material.AIR) && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
-                                                ablock.getRelative(0,1,0).setType(Material.STONE_PLATE);
+                                                ablock.getRelative(0,1,0).setType(Material.STONE_PRESSURE_PLATE);
                                                 ablock.getRelative(0,-1,0).setType(Material.TNT);
                                         }
+                                }else{
+                                        filler = filler * 0.9f;
                                 }
                                 //PRESSURE PLATE SHOOTER
-                                if(ablock.getRelative(0,-1,0).getType().isOccluding() && ablock.getType().equals(Material.AIR) &&random.nextFloat()<trapRate){
-                                        ablock.setType(Material.STONE_PLATE);
+                                if(ablock.getRelative(0,-1,0).getType().isOccluding() && ablock.getType().equals(Material.AIR) &&random.nextFloat()*filler<trapRate){
+                                        filler = 1;
+                                        ablock.setType(Material.STONE_PRESSURE_PLATE);
                                         if(ablock.getRelative(0,0,-1).getType().isOccluding()){ //NORTH
                                                 setupLauncher(ablock.getRelative(0,0,-1),3);
                                         }
@@ -412,12 +462,14 @@ class DungeonPopulator extends BlockPopulator{
                                         else if(ablock.getRelative(-1,0,0).getType().isOccluding()){//EAST
                                                 setupLauncher(ablock.getRelative(1,0,0),5);
                                         }
+                                }else{
+                                        filler=filler*fillrate;
                                 }
 
                         }
                         if(light){
-                                if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()<decoRate){
- 
+                                if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()*filler<decoRate){
+                                        filler=1f;
                                         if(ablock.getRelative(0,0,-1).getType().isOccluding()){ //NORTH
                                                 ablock.setType(Material.TORCH);
                                                 BlockState state = ablock.getState();
@@ -446,6 +498,8 @@ class DungeonPopulator extends BlockPopulator{
                                                 state.setRawData((byte)1);
                                                 state.update(true,true);
                                         }
+                                }else{
+                                        filler=filler*fillrate;
                                 }
                         }
 
@@ -487,62 +541,76 @@ class DungeonPopulator extends BlockPopulator{
                         }
                 
 
-                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()<treasureRate){
+                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()*filler<treasureRate){
+                                filler = 1;
                                 fillchest(ablock);
+                        }else{
+                                filler=filler*fillrate;
                         }
-                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()<treasureRate){
+                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().isOccluding() && random.nextFloat()*filler<treasureRate){
+                                filler=1;
                                 ablock.setType(Material.TRAPPED_CHEST);
-                                List<ItemStack> contents = Loot.getTreasure();
+                                List<ItemStack> contents = Loot.getTreasure(ablock.getLocation());
                                 if(!ChestUtils.addItemsToChest(ablock, contents,true,StorySpirit.random)){
                                         System.out.println("Could not add items to chest");
                                 }
                                 ablock.getRelative(0,-2,0).setType(Material.TNT);
+                        }else{
+                                filler=filler*fillrate;
                         }
 
                         
 
 
-                        if(ablock.getType().equals(Material.SMOOTH_BRICK) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                        if(ablock.getType().equals(Material.STONE_BRICKS) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()*filler<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                filler=1;
                                 fillchest(ablock);
-                                setBlockType(ablock.getRelative(0,1,0), Material.CARPET, 8, true, true);
-                        }else if(ablock.getType().equals(Material.WOOD) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                setBlockType(ablock.getRelative(0,1,0), Material.GRAY_CARPET, 8, true, true);
+                        }else if(ablock.getType().equals(Material.ACACIA_PLANKS) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()*filler<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                filler=1;
                                 fillchest(ablock);
-                                setBlockType(ablock.getRelative(0,1,0), Material.CARPET, 12, true, true);
-                        }else if(ablock.getType().equals(Material.SANDSTONE) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                setBlockType(ablock.getRelative(0,1,0), Material.ORANGE_CARPET, 12, true, true);
+                        }else if(ablock.getType().equals(Material.SANDSTONE) && ablock.getRelative(0,1,0).getType().equals(Material.AIR)&&random.nextFloat()*filler<treasureRate && ablock.getY()<origin.getRelative(0,ymax,0).getY()){
+                                filler=1;
                                 fillchest(ablock);
-                                setBlockType(ablock.getRelative(0,1,0), Material.CARPET, 4, true, true);                               
+                                setBlockType(ablock.getRelative(0,1,0), Material.YELLOW_CARPET, 4, true, true);                               
+                        }else{
+                                filler=filler*fillrate;
                         }
 
-                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()<treasureRate*0.25){
+                        if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()*filler<treasureRate*0.25){
+                                filler=1;
                                 if(ablock.getRelative(0,0,-1).getType().isOccluding()){
                                         ablock.setType(Material.ITEM_FRAME);
                                         ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
-                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed(ablock.getLocation())));
                                         itemFrame.setFacingDirection(BlockFace.NORTH);
 
                                 }else if(ablock.getRelative(0,0,1).getType().isOccluding()){
                                         ablock.setType(Material.ITEM_FRAME);
                                         ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
-                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed(ablock.getLocation())));
                                         itemFrame.setFacingDirection(BlockFace.SOUTH);
                                 }else if(ablock.getRelative(1,0,0).getType().isOccluding()){
                                         ablock.setType(Material.ITEM_FRAME);
                                         ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
-                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed(ablock.getLocation())));
                                         itemFrame.setFacingDirection(BlockFace.WEST);
 
                                 }else if(ablock.getRelative(-1,0,0).getType().isOccluding()){
                                         ablock.setType(Material.ITEM_FRAME);
                                         ItemFrame itemFrame = (ItemFrame)ablock.getWorld().spawnEntity(ablock.getLocation(), EntityType.ITEM_FRAME);
-                                        itemFrame.setItem(new ItemStack(Loot.randomNamed()));
+                                        itemFrame.setItem(new ItemStack(Loot.randomNamed(ablock.getLocation())));
                                         itemFrame.setFacingDirection(BlockFace.EAST);
                                 }
                                 
+                        }else{
+                                filler = filler * 0.9f;
                         }
 
 
                         if(ablock.getType().equals(Material.AIR)&&(spiders ^ random.nextFloat()>decoRate*0.25f)){
-                                ablock.setType(Material.WEB);
+                                ablock.setType(Material.COBWEB);
                         }
 
 
@@ -595,15 +663,28 @@ class DungeonPopulator extends BlockPopulator{
                         if(random.nextFloat()<branchChance*0.05f){
                                 buildRoom(origin.getRelative(0,-1*ymax+ymin,0),xsize,zsize,roof,wall,floor,Arrays.asList(type),interval,newBranchChance,origins,random);
 
-                                origin.getRelative(0,ymin+1,0).setType(Material.TRAP_DOOR);
+                                origin.getRelative(0,ymin+1,0).setType(Material.OAK_TRAPDOOR);
 
                                 origin.getRelative(0,ymin,0).setType(Material.LADDER);
+                                Block ndown = origin.getRelative(0,ymin,0);
+                                while(ndown.getType().equals(Material.AIR) && ndown.getRelative(0,0,1).getType().equals(Material.AIR)){
+                                        ndown.getRelative(0,0,1).setType(floor.get(random.nextInt(floor.size())));
+                                        ndown.setType(Material.LADDER);
+                                        ndown = origin.getRelative(0,-1,0);
+                                }
                         }
                         if(random.nextFloat()<branchChance*0.05f){
                                 buildRoom(origin.getRelative(0,-1*ymin+ymax,0),xsize,zsize,roof,wall,floor,Arrays.asList(type),interval,newBranchChance,origins,random);
-                                origin.getRelative(0,ymax+1,0).setType(Material.TRAP_DOOR);
+                                origin.getRelative(0,ymax+1,0).setType(Material.OAK_TRAPDOOR);
 
                                 origin.getRelative(0,ymax,0).setType(Material.LADDER);
+
+                                Block ndown = origin.getRelative(0,ymax,0);
+                                while(ndown.getType().equals(Material.AIR) && ndown.getRelative(0,0,1).getType().equals(Material.AIR)){
+                                        ndown.getRelative(0,0,1).setType(floor.get(random.nextInt(floor.size())));
+                                        ndown.setType(Material.LADDER);
+                                        ndown = origin.getRelative(0,-1,0);
+                                }
                         }
                 }
 
@@ -660,7 +741,7 @@ class DungeonPopulator extends BlockPopulator{
                 if(!ChestUtils.isChest(block)){
                         System.out.println("Tried to put things in a not-chest!");
                 }
-                List<ItemStack> contents = Loot.getTreasure();
+                List<ItemStack> contents = Loot.getTreasure(block.getLocation());
                 if(!ChestUtils.addItemsToChest(block, contents,true,StorySpirit.random)){
                         System.out.println("Could not add items to chest");
                 }
@@ -685,11 +766,20 @@ class DungeonPopulator extends BlockPopulator{
                 projectiles.add(new ItemStack(Material.ARROW,4));
                 projectiles.add(new ItemStack(Material.ARROW,4));
                 projectiles.add(new ItemStack(Material.EGG,4));
-                projectiles.add(new ItemStack(Material.SNOW_BALL,4));
-                projectiles.add(new ItemStack(373, 5, (short) 16396));
-                projectiles.add(new ItemStack(373, 5, (short) 16420));
-                projectiles.add(new ItemStack(373, 5, (short) 16426));
-                projectiles.add(new ItemStack(373, 5, (short) 16424));
+                projectiles.add(new ItemStack(Material.SNOWBALL,4));
+                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16396));
+                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16420));
+                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16426));
+                projectiles.add(new ItemStack(Material.LEGACY_POTION, 5, (short) 16424));
+
+                ItemStack potion = new ItemStack(Material.LEGACY_SPLASH_POTION, 10);
+                PotionMeta potionmeta = (PotionMeta) potion.getItemMeta();
+                potionmeta.setMainEffect(PotionEffectType.LEVITATION);
+                PotionEffect speed = new PotionEffect(PotionEffectType.LEVITATION, 1000, 1);
+                potionmeta.addCustomEffect(speed, true);
+                potionmeta.setDisplayName("Splash Potion Of Levitation");
+                potion.setItemMeta(potionmeta);
+                projectiles.add(potion);
                 
 
                 block.setType(Material.DISPENSER);

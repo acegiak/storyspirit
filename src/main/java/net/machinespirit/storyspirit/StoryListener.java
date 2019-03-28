@@ -64,7 +64,7 @@ public class StoryListener implements Listener
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event)
     {
-        if(StorySpirit.random.nextFloat() < 1f/150f || (event.getEntity() instanceof Witch && StorySpirit.random.nextBoolean())){
+        if(StorySpirit.random.nextFloat() < 1f/150f || (event.getEntity() instanceof Witch && StorySpirit.random.nextFloat()<0.1f)){
             event.setCancelled(true);
             Character.spawn(event.getLocation().getWorld(), event.getLocation(),event.getEntityType(),StorySpirit.random.nextInt(18));
         }
@@ -108,8 +108,8 @@ public class StoryListener implements Listener
         if(event.getRightClicked().getScoreboardTags().contains("nice")&&event.getRightClicked() instanceof Witch){
             Merchant m = Bukkit.createMerchant(event.getRightClicked().getCustomName());
 
-            Material[] ingredients = new Material[]{Material.SPIDER_EYE,Material.WATER_LILY,Material.POISONOUS_POTATO,Material.SLIME_BALL,Material.APPLE,Material.VINE,Material.RED_MUSHROOM,Material.BONE,Material.ENDER_PEARL,Material.FERMENTED_SPIDER_EYE,Material.BROWN_MUSHROOM,Material.ROTTEN_FLESH,Material.MUTTON,Material.BEETROOT,Material.PORK,Material.RAW_BEEF,Material.FLINT,Material.BLAZE_ROD,Material.CLAY_BALL,Material.COAL,Material.SEEDS,Material.WHEAT,Material.POTATO_ITEM,Material.RAW_FISH,Material.SNOW_BALL,Material.REDSTONE,Material.STICK,Material.FLINT,Material.WHEAT,Material.PAPER,Material.STRING,Material.SUGAR_CANE,Material.SUGAR,Material.QUARTZ,Material.LEATHER,Material.LAVA_BUCKET,Material.BREAD,Material.MILK_BUCKET,Material.GOLD_NUGGET,Material.GHAST_TEAR,Material.EGG,Material.WOOL,Material.RABBIT_FOOT,Material.FEATHER,Material.RABBIT_HIDE,Material.FLOWER_POT_ITEM};
-            Material[] offered = new Material[]{Material.LEATHER_LEGGINGS,Material.LEATHER_BOOTS,Material.APPLE,Material.BEETROOT_SOUP,Material.EMERALD,Material.PAINTING,Material.CAULDRON_ITEM,Material.EYE_OF_ENDER,Material.GOLDEN_APPLE,Material.GOLDEN_CARROT,Material.BUCKET,Material.FLOWER_POT_ITEM,Material.BOAT,Material.BOOK_AND_QUILL,Material.BOOKSHELF,Material.COOKIE,Material.CAKE,Material.MUSHROOM_SOUP,Material.CARROT_STICK,Material.FIREWORK,Material.JUKEBOX,Material.MAP,Material.LEASH,Material.GLOWSTONE,Material.MOSSY_COBBLESTONE,Material.PUMPKIN_PIE,Material.RABBIT_STEW,Material.SEA_LANTERN,Material.SHIELD,Material.BANNER,Material.TOTEM};
+            Material[] ingredients = new Material[]{Material.SPIDER_EYE,Material.LILY_PAD,Material.POISONOUS_POTATO,Material.SLIME_BALL,Material.APPLE,Material.VINE,Material.RED_MUSHROOM,Material.BONE,Material.ENDER_PEARL,Material.FERMENTED_SPIDER_EYE,Material.BROWN_MUSHROOM,Material.ROTTEN_FLESH,Material.MUTTON,Material.BEETROOT,Material.PORKCHOP,Material.BEEF,Material.FLINT,Material.BLAZE_ROD,Material.CLAY_BALL,Material.COAL,Material.WHEAT_SEEDS,Material.WHEAT,Material.POTATO,Material.LEGACY_RAW_FISH,Material.SNOWBALL,Material.REDSTONE,Material.STICK,Material.FLINT,Material.WHEAT,Material.PAPER,Material.STRING,Material.SUGAR_CANE,Material.SUGAR,Material.QUARTZ,Material.LEATHER,Material.LAVA_BUCKET,Material.BREAD,Material.MILK_BUCKET,Material.GOLD_NUGGET,Material.GHAST_TEAR,Material.EGG,Material.WHITE_WOOL,Material.RABBIT_FOOT,Material.FEATHER,Material.RABBIT_HIDE,Material.FLOWER_POT};
+            Material[] offered = new Material[]{Material.LEATHER_LEGGINGS,Material.LEATHER_BOOTS,Material.APPLE,Material.BEETROOT_SOUP,Material.EMERALD,Material.PAINTING,Material.CAULDRON,Material.ENDER_EYE,Material.GOLDEN_APPLE,Material.GOLDEN_CARROT,Material.BUCKET,Material.FLOWER_POT,Material.OAK_BOAT,Material.WRITABLE_BOOK,Material.BOOKSHELF,Material.COOKIE,Material.CAKE,Material.BEETROOT_SOUP,Material.CARROT_ON_A_STICK,Material.FIREWORK_ROCKET,Material.JUKEBOX,Material.MAP,Material.LEAD,Material.GLOWSTONE,Material.MOSSY_COBBLESTONE,Material.PUMPKIN_PIE,Material.RABBIT_STEW,Material.SEA_LANTERN,Material.SHIELD,Material.WHITE_BANNER,Material.TOTEM_OF_UNDYING};
             List<MerchantRecipe> recipes = new ArrayList<MerchantRecipe>();
 
             if(DataLayer.witchInventories.containsKey(event.getRightClicked().getUniqueId())){
@@ -135,12 +135,64 @@ public class StoryListener implements Listener
                         r2 +=3;
                     }
                     if(choicespace<0.8f){
-                        item = new ItemStack(373, StorySpirit.random.nextInt(reward), (short) (8193+StorySpirit.random.nextInt(13)));
+                        item = new ItemStack(Material.LEGACY_POTION, StorySpirit.random.nextInt(reward), (short) (8193+StorySpirit.random.nextInt(13)));
                     }else if(choicespace<0.95f){
                         item = new ItemStack(offered[StorySpirit.random.nextInt(offered.length)], reward);
                     }else{
-                        int[] eggs = new int[]{4,5,6,23,27,34,35,36,37,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,66,67,68,69,28,29,31,32,65,90,91,92,93,94,95,96,97,98,99,100,101,102,103,105,120};
-                        item = new ItemStack(Material.MONSTER_EGG,1,(short)eggs[StorySpirit.random.nextInt(eggs.length)]);
+                        Material[] eggs = new Material[]{
+                            Material.ELDER_GUARDIAN_SPAWN_EGG,
+                            Material.ENDERMAN_SPAWN_EGG,
+                            Material.ENDERMITE_SPAWN_EGG,
+                            Material.EVOKER_SPAWN_EGG,
+                            Material.BAT_SPAWN_EGG,
+                            Material.BLAZE_SPAWN_EGG,
+                            Material.CAVE_SPIDER_SPAWN_EGG,
+                            Material.COD_SPAWN_EGG,
+                            Material.CHICKEN_SPAWN_EGG,
+                            Material.COW_SPAWN_EGG,
+                            Material.CREEPER_SPAWN_EGG,
+                            Material.DOLPHIN_SPAWN_EGG,
+                            Material.DONKEY_SPAWN_EGG,
+                            Material.DROWNED_SPAWN_EGG,
+                            Material.GHAST_SPAWN_EGG,
+                            Material.GUARDIAN_SPAWN_EGG,
+                            Material.HORSE_SPAWN_EGG,
+                            Material.HUSK_SPAWN_EGG,
+                            Material.LLAMA_SPAWN_EGG,
+                            Material.MAGMA_CUBE_SPAWN_EGG,
+                            Material.MOOSHROOM_SPAWN_EGG,
+                            Material.MULE_SPAWN_EGG,
+                            Material.OCELOT_SPAWN_EGG,
+                            Material.PARROT_SPAWN_EGG,
+                            Material.PHANTOM_SPAWN_EGG,
+                            Material.PIG_SPAWN_EGG,
+                            Material.POLAR_BEAR_SPAWN_EGG,
+                            Material.PUFFERFISH_SPAWN_EGG,
+                            Material.RABBIT_SPAWN_EGG,
+                            Material.SALMON_SPAWN_EGG,
+                            Material.SHEEP_SPAWN_EGG,
+                            Material.SHULKER_SPAWN_EGG,
+                            Material.SILVERFISH_SPAWN_EGG,
+                            Material.SKELETON_HORSE_SPAWN_EGG,
+                            Material.SKELETON_SPAWN_EGG,
+                            Material.SLIME_SPAWN_EGG,
+                            Material.SPIDER_SPAWN_EGG,
+                            Material.SQUID_SPAWN_EGG,
+                            Material.STRAY_SPAWN_EGG,
+                            Material.TROPICAL_FISH_SPAWN_EGG,
+                            Material.TURTLE_SPAWN_EGG,
+                            Material.VEX_SPAWN_EGG,
+                            Material.VILLAGER_SPAWN_EGG,
+                            Material.VINDICATOR_SPAWN_EGG,
+                            Material.WITCH_SPAWN_EGG,
+                            Material.WITHER_SKELETON_SPAWN_EGG,
+                            Material.WOLF_SPAWN_EGG,
+                            Material.ZOMBIE_HORSE_SPAWN_EGG,
+                            Material.ZOMBIE_PIGMAN_SPAWN_EGG,
+                            Material.ZOMBIE_SPAWN_EGG,
+                            Material.ZOMBIE_VILLAGER_SPAWN_EGG
+                        };
+                        item = new ItemStack(eggs[StorySpirit.random.nextInt(eggs.length)],1);
                     }
                     int c = item.getAmount()%item.getType().getMaxStackSize();
                     if(c>1){
@@ -365,6 +417,8 @@ public class StoryListener implements Listener
             Character.convert(event.getEntity(), StorySpirit.random.nextInt(18),newName);
         
     }
+
+    
 
 
 }

@@ -70,7 +70,7 @@ public class Conversation {
 		}
 		for(int i = 0; i<12;i++){
 			int choice = StorySpirit.random.nextInt(2);
-			if(choice == 0){
+			if(choice == 0 && DataLayer.db.bosses != null && DataLayer.db.bosses.keySet().size() > 0){
 				int r = StorySpirit.random.nextInt(DataLayer.db.bosses.keySet().size());
 				String bossId = (String) DataLayer.db.bosses.keySet().toArray()[r];
 				String bossName = (String) DataLayer.db.names.get(bossId);
@@ -137,10 +137,10 @@ public class Conversation {
 	public static String delivery(Villager villi,Player player){
 		if(Namer.rand.nextInt(25)<1){
 
-			String villagerId = (String) DataLayer.db.opinions.keySet().toArray()[StorySpirit.random.nextInt(DataLayer.db.opinions.keySet().size())];
+			String villagerId = DataLayer.reasonableVill(player.getLocation());
 
 			String villagerName = DataLayer.getName(villagerId);
-			if(!villagerId.equals(villi.getUniqueId().toString())){
+			if(villagerId != null && !villagerId.equals(villi.getUniqueId().toString())){
 					ItemStack s = null;
 					String n = "Oddment";
 					switch(StorySpirit.random.nextInt(7)){
@@ -173,7 +173,7 @@ public class Conversation {
 						n=Namer.random(new String[]{"Self Portait","Lewd Illustration","Mysterious Landscape","Abstract Art"})+" from "+villi.getCustomName();
 						break;
 					case 7:
-						s = new ItemStack(Material.WOOD_HOE);
+						s = new ItemStack(Material.WOODEN_HOE);
 						n=Namer.random(new String[]{"Old Tool","Dirty Hoe","Spare Hoe","Broken Tool"})+" from "+villi.getCustomName();
 						break;
 						

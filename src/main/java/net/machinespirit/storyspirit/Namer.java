@@ -14,7 +14,13 @@ public class Namer {
 		"gon","bat","nil","har","tim","tin","jon","son","wil","mor","gan","red","blu","sham","forth","mold","gee","wick","stern","brad","pyre","rip","er","reg",
 		"kit","nol","fres","yan","cris","fold","dal","val","inga","unga","onga","par","wil","myp","ald","heg","won","nir","ble","sni","shre","bren","hro","thre",
 		"lig","amp","nro","arg","ops","ond","reb","yal","wri","fro","mo","no","ke","dilly","mot","weg","gle","rhi","sho","nock","keg","mock","led","tri","tre","mep",
-		"tha","ma","gria","shto","ugs","unt","erd","bla","shin","dig","krunk","bag","sold","free","pod","weel","tod","ron","nick","olas","cycle","chael","ander"};
+		"tha","ma","gria","shto","ugs","unt","erd","bla","shin","dig","krunk","bag","sold","free","pod","weel","tod","ron","nick","olas","cycle","chael","ander","brot",
+		"can","dol","maik","pod","fick","don","reen","tors","wilt","nock","brig","fold","meek","song","than","thon","rold","seel","bols","kred","fang","mult","rowd",
+		"ship","lop","granst","yol","vol","yurn","yust","drig","drall","nox","tret","may","worn","jit","rosh","ram","wry","bull","sull","bos","son",
+		"dates","xeri","mithri","poly","abad","grad","nox","ptero","saur","fant","atog","andro","integri","intra","macro","hypo","micro","omni","pater","orni","orth",
+		"paleo","plasm","pseudo","pro","proto","semi","taxo","trans","ultra","uni","mono","hex","trip","tetra","oct","cide","logos","meter","ism","gamy","dactyl","cyst",
+		"nomer","phase","phage","itis","phyte","stasis","stat","thes","vor","pod","some","hydra","morph","xera","dothro","tris","kon","ate","fil","nossa","xerad"
+	};
 	
 	static String[] adjectives = new String[]{"Amazing","Terrifying","Unbroken","Silent","Hungry","Chosen","Immortal","Important","Furry",
 		"Nice","Homely","Slow","Round","Sharp","Blunt","Unbowing","Fearful","Unchallenged","Glorious","Funny","Dangerous","Short","Creepy","Slimy",
@@ -49,14 +55,11 @@ public class Namer {
 		String ret = "";
 		int j = rand.nextInt(2)+1;
 		for(int i = 0;i<j;i++){
-			if(rand.nextFloat() > 0.3f){
-				ret += syllable();
-			}else{
-				ret+= random(syllables);
-				if(j == 1 && i == 0){
-					j++;
-				}
+			ret+= random(syllables);
+			if(j == 1 && i == 0){
+				j++;
 			}
+			
 		}
 		return ret.substring(0,1).toUpperCase()+ret.substring(1);
 	}

@@ -117,12 +117,12 @@ public static void convert(LivingEntity entity ,Integer points, String name){
         tool = new ItemStack(Material.BOW);
     }
     if(entity.getType().equals(EntityType.ZOMBIE) || entity.getType().equals(EntityType.WITHER_SKULL) || entity.getType().equals(EntityType.PIG_ZOMBIE)){
-        tool = new ItemStack((Material) select(new Material[]{Material.WOOD_AXE,Material.WOOD_SWORD,Material.IRON_AXE,Material.IRON_SWORD,Material.GOLD_AXE,Material.GOLD_SWORD,Material.DIAMOND_SWORD},points));
+        tool = new ItemStack((Material) select(new Material[]{Material.WOODEN_AXE,Material.WOODEN_SWORD,Material.IRON_AXE,Material.IRON_SWORD,Material.GOLDEN_AXE,Material.GOLDEN_SWORD,Material.DIAMOND_SWORD},points));
     }
-    ItemStack shirt = new ItemStack((Material) select(new Material[]{Material.LEATHER_CHESTPLATE,Material.LEATHER_CHESTPLATE,Material.GOLD_CHESTPLATE,Material.IRON_CHESTPLATE,Material.CHAINMAIL_CHESTPLATE,Material.DIAMOND_CHESTPLATE},points));
-    ItemStack head = new ItemStack((Material) select(new Material[]{Material.LEATHER_HELMET,Material.LEATHER_HELMET,Material.GOLD_HELMET,Material.IRON_HELMET,Material.CHAINMAIL_HELMET,Material.DIAMOND_HELMET},points));
-    ItemStack pants = new ItemStack((Material) select(new Material[]{Material.LEATHER_LEGGINGS,Material.LEATHER_LEGGINGS,Material.GOLD_LEGGINGS,Material.IRON_LEGGINGS,Material.CHAINMAIL_LEGGINGS,Material.DIAMOND_LEGGINGS},points));
-    ItemStack shoes = new ItemStack((Material) select(new Material[]{Material.LEATHER_BOOTS,Material.LEATHER_BOOTS,Material.GOLD_BOOTS,Material.IRON_BOOTS,Material.CHAINMAIL_BOOTS,Material.DIAMOND_BOOTS},points));
+    ItemStack shirt = new ItemStack((Material) select(new Material[]{Material.LEATHER_CHESTPLATE,Material.LEATHER_CHESTPLATE,Material.GOLDEN_CHESTPLATE,Material.IRON_CHESTPLATE,Material.CHAINMAIL_CHESTPLATE,Material.DIAMOND_CHESTPLATE},points));
+    ItemStack head = new ItemStack((Material) select(new Material[]{Material.LEATHER_HELMET,Material.LEATHER_HELMET,Material.GOLDEN_HELMET,Material.IRON_HELMET,Material.CHAINMAIL_HELMET,Material.DIAMOND_HELMET},points));
+    ItemStack pants = new ItemStack((Material) select(new Material[]{Material.LEATHER_LEGGINGS,Material.LEATHER_LEGGINGS,Material.GOLDEN_LEGGINGS,Material.IRON_LEGGINGS,Material.CHAINMAIL_LEGGINGS,Material.DIAMOND_LEGGINGS},points));
+    ItemStack shoes = new ItemStack((Material) select(new Material[]{Material.LEATHER_BOOTS,Material.LEATHER_BOOTS,Material.GOLDEN_BOOTS,Material.IRON_BOOTS,Material.CHAINMAIL_BOOTS,Material.DIAMOND_BOOTS},points));
     
     int[] color1 = new int[]{StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255)};
     int[] color2 = new int[]{StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255),StorySpirit.random.nextInt(255)};
@@ -144,7 +144,7 @@ public static void convert(LivingEntity entity ,Integer points, String name){
         }
         Enchantment e = null;
         while(e == null){
-            e = Enchantment.getById(StorySpirit.random.nextInt(63));
+            e = Enchantment.values()[StorySpirit.random.nextInt(Enchantment.values().length)];
         }
         int l = 0;
         switch(StorySpirit.random.nextInt(5)){

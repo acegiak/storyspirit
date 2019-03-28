@@ -4,6 +4,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import com.google.gson.Gson;
 
@@ -101,7 +102,7 @@ public class DataLayer {
             db.opinions.put(entity.getUniqueId().toString(), new HashMap<String,Float>());
         }
         db.opinions.get(entity.getUniqueId().toString()).put(player.getUniqueId().toString(), opinionValue);
-        save();
+        setSeen(entity);
         setName(entity);
     }
 
@@ -118,6 +119,46 @@ public class DataLayer {
         }
 
         return db.opinions.get(entity.getUniqueId().toString()).get(player.getUniqueId().toString());
+    }
+
+    public static void setSeen(Entity entity){
+        if(db.lastSeen == null){
+            db.lastSeen = new HashMap<String,Vector>();
+        }
+        db.lastSeen.put(entity.getUniqueId().toString(), entity.getLocation().toVector());
+
+    }
+
+    public static Vector getSeen(String id){
+        if(db.lastSeen == null){
+            return null;
+        }
+        if(!db.lastSeen.containsKey(id)){
+            return null;
+        }
+        return db.lastSeen.get(id);
+    }
+
+    public static String reasonableVill(Location l){
+        if(db.opinions.size() <= 0){
+            return null;
+        }
+        int countdown = Math.max(10,db.opinions.size()/10);
+        while(countdown > -10){
+            String id = (String)DataLayer.db.opinions.keySet().toArray()[StorySpirit.random.nextInt(DataLayer.db.opinions.size())];
+            Vector seen = getSeen(id);
+            if(l == null || seen == null){
+                continue;
+            }
+            double distance = l.toVector().distance(seen);
+            System.out.println(distance);
+            if(distance<1500f || countdown <=0){
+                return id;
+            }
+            countdown--;
+        }
+        System.out.println("COULDNT FIND A REASONABLE VILLAGER");
+        return null;
     }
 
     public static void setBoss(Entity entity){

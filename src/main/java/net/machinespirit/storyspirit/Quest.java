@@ -29,7 +29,7 @@ import org.bukkit.util.Vector;
 public class Quest {
     public static void complete(Player player, String questName){
         player.sendMessage("Quest Complete: "+questName+"!");
-        ItemStack token = new ItemStack(Material.EXP_BOTTLE);
+        ItemStack token = new ItemStack(Material.EXPERIENCE_BOTTLE);
         ItemMeta meta = token.getItemMeta();
         meta.setDisplayName(player.getDisplayName()+" "+questName);
         token.setItemMeta(meta);
