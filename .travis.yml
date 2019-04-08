@@ -12,5 +12,5 @@ before_deploy:
 deploy:
   provider: releases
   api_key: "$githubOauth"
-  file: "target/StorySpirit-1.1.jar"
+  file: "/home/travis/build/acegiak/storyspirit/target/StorySpirit-1.2.jar"
   skip_cleanup: true
