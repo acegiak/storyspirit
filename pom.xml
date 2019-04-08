@@ -3,7 +3,7 @@
     <groupId>net.machinespirit.storyspirit</groupId>
     <artifactId>StorySpirit</artifactId>
     <!-- Version is used in plugin.yml -->
-    <version>1.1</version>
+    <version>1.2</version>
 
 
     <!-- Plugin Information -->

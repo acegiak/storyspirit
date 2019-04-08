@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class StorySpirit extends JavaPlugin {
     public static Random random;
@@ -76,7 +77,13 @@ public class StorySpirit extends JavaPlugin {
         System.out.println("WORLDNAME IS: "+worldName);
         DataLayer.onLoad(getDataFolder(),worldName);
 
-
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new BukkitRunnable(){
+        
+            @Override
+            public void run() {
+                Renovator.RenovationCheck(getServer().getWorlds().get(0));
+            }
+        }, 20*60, 20*60);
     }
 
 

@@ -31,7 +31,8 @@ public class Namer {
 		"Nightmare King","Child Deciever","Critic","God","Painbringer","Daywalker"};
 
 	static String[] lessgoodadjectives = new String[]{"spare","old","trusty","extra","beloved","useful","handy","sturdy","damaged","unbreakable","heirloom","basic",
-		"fancy","tricky","fiddly","rusty","dirty","shiny","painted","prized",""};	
+	"fancy","tricky","fiddly","rusty","dirty","shiny","painted","prized",""};	
+	static String[] townsuffixes = new String[]{"ton","town","ston","stone","wick","well","abad","shire","grad","cross"};	
 	static Random rand = new Random();
 	static String random(String[] strings){
 		return (String) strings[new Random().nextInt(strings.length)];
@@ -63,4 +64,9 @@ public class Namer {
 		}
 		return ret.substring(0,1).toUpperCase()+ret.substring(1);
 	}
+	
+	public static String townName(){
+		return name()+townsuffixes[StorySpirit.random.nextInt(townsuffixes.length)];
+	}
+
 }

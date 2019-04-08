@@ -72,6 +72,22 @@ public class DataLayer {
         save();
     }
 
+
+    public static void setTown(Entity entity, String townName){
+        if(db.towns == null){
+            db.towns = new HashMap<String,String>();
+        }
+        db.towns.put(entity.getUniqueId().toString(), townName);
+        save();
+    }
+
+    public static String getTown(String id){
+        if(db.towns == null){
+            db.towns = new HashMap<String,String>();
+        }
+        return db.towns.get(id);
+    }
+
     public static void setBlessing(Entity entity, PotionEffectType effectType){
         if(db.blessings == null){
             db.blessings = new HashMap<String,Integer>();

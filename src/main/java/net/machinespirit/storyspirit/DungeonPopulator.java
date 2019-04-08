@@ -88,7 +88,8 @@ class DungeonPopulator extends BlockPopulator{
                 Material.SPRUCE_LEAVES,
                 Material.SNOW,
                 Material.GRASS,
-                Material.VINE
+                Material.VINE,
+                Material.CAVE_AIR
         ));
 
 
@@ -489,34 +490,10 @@ class DungeonPopulator extends BlockPopulator{
                         if(light){
                                 if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()*filler<decoRate){
                                         filler=1f;
-                                        if(ablock.getRelative(0,0,-1).getType().isOccluding()){ //NORTH
-                                                ablock.setType(Material.TORCH);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.TORCH);
-                                                state.setRawData((byte)3);
-                                                state.update(true,true);
-                                        }
-                                        else if(ablock.getRelative(0,0,1).getType().isOccluding()){ //SOUTH
-                                                ablock.setType(Material.TORCH);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.TORCH);
-                                                state.setRawData((byte)4);
-                                                state.update(true,true);
-                                        }
-                                        else if(ablock.getRelative(1,0,0).getType().isOccluding()){ //WEST
-                                                ablock.setType(Material.TORCH);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.TORCH);
-                                                state.setRawData((byte)2);
-                                                state.update(true,true);
-                                        }     
-                                        else if(ablock.getRelative(-1,0,0).getType().isOccluding()){//EAST
-                                                ablock.setType(Material.TORCH);
-                                                BlockState state = ablock.getState();
-                                                state.setType(Material.TORCH);
-                                                state.setRawData((byte)1);
-                                                state.update(true,true);
-                                        }
+
+                                        ablock.setType(Material.WALL_TORCH);
+                                        Renovator.Orient(ablock);
+                                        
                                 }else{
                                         filler=filler*fillrate;
                                 }

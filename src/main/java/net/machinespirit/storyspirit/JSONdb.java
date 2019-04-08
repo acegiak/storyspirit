@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
 public class JSONdb {
     public HashMap<String,HashMap<String,Float>> opinions;
     public HashMap<String,String> names;
+    public HashMap<String,String> towns;
     public HashMap<String,Integer> blessings;
     public HashMap<String,double[]> bosses;
     public HashMap<String,double[]> lostFriends;

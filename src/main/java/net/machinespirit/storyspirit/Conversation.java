@@ -2,6 +2,8 @@ package net.machinespirit.storyspirit;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.xml.crypto.Data;
+
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -19,17 +21,32 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 
 public class Conversation {
-	static String[] general = new String[]{"What do you want?","Have I got a deal for you!","Who are you supposed to be?","I'm growing a beard!","Burn the bodies but keep the skulls!","What's your luckydo?"};
+	static String[] general = new String[]{
+		"What do you want?",
+		"Have I got a deal for you!",
+		"Who are you supposed to be?",
+		"I'm growing a beard!",
+		"Burn the bodies but keep the skulls!",
+		"What's your luckydo?",
+		"Dark creatures lurk. Beware.",
+	};
 
 	public static String talk(Villager villi,Player p){
 		Character.villiconvert(villi);
-		
+		String town = DataLayer.getTown(villi.getUniqueId().toString());
+		if(town == null){
+			town = Namer.townName();
+			DataLayer.setTown(villi, town);
+		}
 		for(Object o : villi.getNearbyEntities(50, 50, 50)){
             if(o instanceof Villager){
                 Character.villiconvert((Villager) o);
                 float avg = (getOpinion((Villager)o,p)+getOpinion(villi,p))/2f;
 				changeOpinion((Villager)o,p,(avg - getOpinion((Villager)o,p))*0.05f);
 				changeOpinion(villi,p,(avg - getOpinion(villi,p))*0.05f);
+
+				DataLayer.setTown((Entity)o, town);
+				
             }
 		}
 		
@@ -46,7 +63,10 @@ public class Conversation {
 		
 		String ret = villi.getCustomName()+": ";
         ArrayList<String> choices = new ArrayList<String>(Arrays.asList(general));
-        
+		
+		choices.add("Welcome to "+town+"!");
+		
+
         for(Object r : villi.getRecipes()){
 			MerchantRecipe recipe = (MerchantRecipe)r;
 			if(!recipe.getResult().getType().equals(Material.EMERALD)){
@@ -104,9 +124,9 @@ public class Conversation {
 		
 		points.addAll(ConversationPoint.FromStringset(c, 5f, -0.5f, -0.005f));
 		
-		points.addAll(ConversationPoint.FromStringset(new String[]{"Me not that kind of villager!","Oh no, not you again.","Quit touchin me!","What?","WHAT?","WHAT?!","WHAT IS IT THAT YOU WANT?!","Get out of here.","You're not welcome here, stranger.","Are you as stupid as you look?","Why are you bothering us?","Please, just leave us alone.","We don't have anything for you!","Take your big swinging limbs and get out of here","Please leave.","You disgust me."}, 0f, -10f, -0.01f));
-		points.addAll(ConversationPoint.FromStringset(new String[]{"Oh, hello friend!", "Oh it's you again! Great!","What can we do for you?","Welcome to our village!","Oh! hello "+p.getName()+"!","Can I get you anything?"}, 10f, 0.5f, +0.005f));
-		points.addAll(ConversationPoint.FromStringset(new String[]{"Hey there!", "Please tell us an adventure story!","Do you remember that time with the thing?","Blessings upon you, friend!","Good to see you, "+p.getName()+"!","What can I do for an upstanding citizen such as yourself?"}, 10f, 1f, +0.005f));
+		points.addAll(ConversationPoint.FromStringset(new String[]{"Me not that kind of villager!","Go. You aren't welcome in "+town+".","We don't like your kind in "+town+", stranger.","Oh no, not you again.","Quit touchin me!","What?","WHAT?","WHAT?!","WHAT IS IT THAT YOU WANT?!","Get out of here.","You're not welcome here, stranger.","Are you as stupid as you look?","Why are you bothering us?","Please, just leave us alone.","We don't have anything for you!","Take your big swinging limbs and get out of here","Please leave.","You disgust me."}, 0f, -10f, -0.01f));
+		points.addAll(ConversationPoint.FromStringset(new String[]{"Oh, hello friend!", "Oh it's you again! Great!","What can we do for you?","Welcome to "+town+"!","Oh! hello "+p.getName()+"!","Can I get you anything?"}, 10f, 0.5f, +0.005f));
+		points.addAll(ConversationPoint.FromStringset(new String[]{"Hey there!", "Please tell us an adventure story!","Do you remember that time with the thing?","Blessings upon you, friend!","Good to see you, "+p.getName()+"!","What can I do for an upstanding citizen such as yourself?","It's you! The hero of "+town+"!"}, 10f, 1f, +0.005f));
 		
 		float rep = getOpinion(villi,p);
 		for(int i = points.size()-1;i>=0;i--){
