@@ -490,9 +490,14 @@ class DungeonPopulator extends BlockPopulator{
                         if(light){
                                 if(ablock.getType().equals(Material.AIR) && ablock.getRelative(0,-1,0).getType().equals(Material.AIR) &&random.nextFloat()*filler<decoRate){
                                         filler=1f;
-
-                                        ablock.setType(Material.WALL_TORCH);
-                                        Renovator.Orient(ablock);
+                                        if(ablock.getRelative(BlockFace.NORTH).getType().isOccluding()
+                                        ||ablock.getRelative(BlockFace.SOUTH).getType().isOccluding()
+                                        ||ablock.getRelative(BlockFace.EAST).getType().isOccluding()
+                                        ||ablock.getRelative(BlockFace.WEST).getType().isOccluding()
+                                        ){
+                                                ablock.setType(Material.WALL_TORCH);
+                                                Renovator.Orient(ablock);
+                                        }
                                         
                                 }else{
                                         filler=filler*fillrate;

@@ -103,12 +103,13 @@ class Loot{
 
     public static ItemStack randomItem(Location location){
         ItemStack s = null;
+        
+        if(StorySpirit.random.nextFloat()<0.5f){
+            return randomPotion(location);
+        }
 
         if(StorySpirit.random.nextFloat()<0.15f){
             return randomNamed(location);
-        }
-        if(StorySpirit.random.nextFloat()<0.20f){
-            return randomPotion(location);
         }
 
         int count =0;

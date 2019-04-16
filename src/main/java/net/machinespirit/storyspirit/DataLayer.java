@@ -1,5 +1,8 @@
 package net.machinespirit.storyspirit;
+
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.MerchantRecipe;
@@ -154,6 +157,48 @@ public class DataLayer {
         }
         return db.lastSeen.get(id);
     }
+
+    public static String LocationString(Location location){
+        return location.getWorld().getName()+","+location.getX()+","+location.getY()+","+location.getZ();
+    }
+
+    public static Material getBlueprint(Location location){
+        if(db.blueprints == null){
+            return null;
+        }
+        if(!db.blueprints.containsKey(LocationString(location))){
+            return null;
+        }
+
+        return Material.getMaterial(db.blueprints.get(LocationString(location)));
+    }
+
+
+    public static void setBlueprint(Block block, Material material){
+        setBlueprint(block.getLocation(), material);
+    }
+
+    public static void setBlueprint(Location location, Material material){
+        if(db.blueprints == null){
+            db.blueprints = new HashMap<String,String>();
+        }
+        db.blueprints.put(LocationString(location), material.name());
+    }
+
+
+    public static void removeBlueprint(Location location){
+        if(db.blueprints == null){
+            return;
+        }
+        if(!db.blueprints.containsKey(LocationString(location))){
+            return;
+        }
+
+        db.blueprints.remove(LocationString(location));
+    }
+
+
+
 
     public static String reasonableVill(Location l){
         if(db.opinions.size() <= 0){
