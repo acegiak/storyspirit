@@ -77,13 +77,10 @@ public class StorySpirit extends JavaPlugin {
         System.out.println("WORLDNAME IS: "+worldName);
         DataLayer.onLoad(getDataFolder(),worldName);
 
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new BukkitRunnable(){
-        
-            @Override
-            public void run() {
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
                 Renovator.RenovationCheck(getServer().getWorlds().get(0));
             }
-        }, 20*60, 20*60);
+        , 20*60, 20*60);
     }
 
 

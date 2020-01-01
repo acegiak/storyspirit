@@ -62,7 +62,7 @@ class Renovator {
 
     public static void Renovate(Entity e){
         if(e instanceof Villager){
-            if( ((Villager)e).getRiches() <= 0){
+            if( ((Villager)e).getVillagerExperience() <= 0){
                 return;
             }
         }
@@ -74,7 +74,7 @@ class Renovator {
             if(e instanceof Villager){
                 if(RenovateNice(block)){
                     if(StorySpirit.random.nextFloat()<0.2){
-                        ((Villager)e).setRiches(((Villager)e).getRiches()-1);
+                        ((Villager)e).setVillagerExperience(((Villager)e).getVillagerExperience()-1);
                     }
                 
                     break;
@@ -218,13 +218,35 @@ class Renovator {
         }
 
         if(block.getBlockData() instanceof Bisected && !(block.getBlockData() instanceof Stairs)){
-            Bisected data = (Bisected)block.getBlockData();
+            block.setType(block.getType(),false);
+
+
+            System.out.println("bottom");
+
+            Bisected data = (Bisected)block.getBlockData().clone();
             data.setHalf(Half.BOTTOM);
             block.setBlockData(data);
-            block.getRelative(BlockFace.UP).setType(block.getType());
-            Bisected data2 = (Bisected)block.getRelative(BlockFace.UP).getBlockData();
+
+
+
+            Block block2 = block.getRelative(BlockFace.UP);
+            block2.setType(block.getType(),false);
+          
+
+            
+            System.out.println("top");
+
+            System.out.println(block2.getType().toString());
+            System.out.println(block2.toString());
+            System.out.println(block2.getBlockData().toString());
+            System.out.println(block2.getBlockData().getClass().toString());
+
+            Bisected data2 = (Bisected)block2.getBlockData();
             data2.setHalf(Half.TOP);
-            block.getRelative(BlockFace.UP).setBlockData(data2);;
+            block2.setBlockData(data2);
+
+
+
         }
 
 

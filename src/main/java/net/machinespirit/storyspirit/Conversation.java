@@ -226,7 +226,10 @@ public class Conversation {
         }
 		float existing = DataLayer.getOpinion(villi,p);
 		System.out.println(p.getName()+"'s reputation with "+villi.getCustomName()+" changed by "+Float.toString(mod)+" to "+Float.toString(existing+mod));
-        DataLayer.setOpinion(villi,p,existing+mod);
+		DataLayer.setOpinion(villi,p,existing+mod);
+		if(mod >= 0.1f){
+			villi.setVillagerExperience(villi.getVillagerExperience()+1);
+		}
 	}
 	
 	static public void publicOpinion(Player p, float amount){

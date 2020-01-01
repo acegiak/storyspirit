@@ -91,8 +91,8 @@ public class StoryListener implements Listener
         if(event.getRightClicked() instanceof Villager){
             System.out.println("villiclicked");
             Character.villiconvert((Villager)event.getRightClicked());
-            System.out.println(((Villager)event.getRightClicked()).getName()+":"+Integer.toString(((Villager)event.getRightClicked()).getRiches()));
-
+            //System.out.println(((Villager)event.getRightClicked()).getName()+":"+Integer.toString(((Villager)event.getRightClicked()).getRiches()));
+         
             if(event.getPlayer().isSneaking()){
                 event.setCancelled(true);
                 Boolean delivered = false;

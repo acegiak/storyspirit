@@ -42,7 +42,7 @@ import net.machinespirit.storyspirit.StorySpirit;
 class DungeonPopulator extends BlockPopulator{
 
         public static ArrayList<Material> foundations = new ArrayList<Material>(Arrays.asList(
-                Material.GRASS,
+                Material.GRASS_BLOCK,
                 Material.STONE,
                 Material.DIRT,
                 Material.SAND,
@@ -164,11 +164,11 @@ class DungeonPopulator extends BlockPopulator{
                 }
                 System.out.println("CHOSE:"+origin.toString());
 
-                if(origin.getType().equals(Material.GRASS) && origin.getRelative(0,1,0).getType().equals(Material.AIR) &&
-                origin.getRelative(1,0,1).getType().equals(Material.GRASS) && air.contains(origin.getRelative(1,1,1).getType()) &&
-                origin.getRelative(-1,0,1).getType().equals(Material.GRASS) && air.contains(origin.getRelative(-1,1,1).getType()) &&
-                origin.getRelative(1,0,-1).getType().equals(Material.GRASS) && air.contains(origin.getRelative(1,1,-1).getType()) &&
-                origin.getRelative(-1,0,-1).getType().equals(Material.GRASS) && air.contains(origin.getRelative(-1,1,-1).getType())                    
+                if(origin.getType().equals(Material.GRASS_BLOCK) && origin.getRelative(0,1,0).getType().equals(Material.AIR) &&
+                origin.getRelative(1,0,1).getType().equals(Material.GRASS_BLOCK) && air.contains(origin.getRelative(1,1,1).getType()) &&
+                origin.getRelative(-1,0,1).getType().equals(Material.GRASS_BLOCK) && air.contains(origin.getRelative(-1,1,1).getType()) &&
+                origin.getRelative(1,0,-1).getType().equals(Material.GRASS_BLOCK) && air.contains(origin.getRelative(1,1,-1).getType()) &&
+                origin.getRelative(-1,0,-1).getType().equals(Material.GRASS_BLOCK) && air.contains(origin.getRelative(-1,1,-1).getType())                    
                 ){
                         origin.setType(Material.GRASS_PATH);
                         origin.getRelative(1,0,1).setType(Material.GRASS_PATH);
@@ -193,7 +193,7 @@ class DungeonPopulator extends BlockPopulator{
                                 System.out.println("WE DOIN IT");;
                                 buildRoom(origin.getRelative(0,1,0), 2+StorySpirit.random.nextInt(7), 2+StorySpirit.random.nextInt(7), Arrays.asList(origin.getType()),  Arrays.asList(origin.getType()),  Arrays.asList(origin.getType()), Arrays.asList(null,null,null,leafType.get(origin.getType())),1,0.5f,null, random);
                         }
-                }else if(origin.getType().equals(Material.GRASS)||origin.getType().equals(Material.DIRT)){
+                }else if(origin.getType().equals(Material.GRASS_BLOCK)||origin.getType().equals(Material.DIRT)){
                         buildRoom(origin.getRelative(0,1,0), 5+StorySpirit.random.nextInt(2), 5+StorySpirit.random.nextInt(2), Arrays.asList(Material.ACACIA_SLAB),  Arrays.asList(Material.ACACIA_FENCE),  Arrays.asList(Material.ACACIA_PLANKS),Arrays.asList(null,null,Material.AIR), -3,0.25f,null, random);
                 }else if(origin.getType().equals(Material.SAND) || origin.getType().equals(Material.SANDSTONE )){
                         buildRoom(origin.getRelative(0,1,0), 4+StorySpirit.random.nextInt(5), 4+StorySpirit.random.nextInt(5), Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE),  Arrays.asList(Material.SANDSTONE), Arrays.asList(null,null,null,Material.SANDSTONE_STAIRS),1,0.25f,null, random);
